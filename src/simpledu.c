@@ -5,7 +5,7 @@ int main(int argc, char const *argv[], char *envp[])
   // Objetivo 1:
   // Receber, processar e guardar os
   //  argumentos da linha de comandos e as variáveis de ambiente;
-  flags duflags; initFlags(&duflags);
+  flags duflags; initFlags(&duflags, envp);
 
   if (argc == 1)
     printf("Uso ./simpledu <dir> <flag1> <flag2> ..\n");
@@ -23,12 +23,24 @@ int main(int argc, char const *argv[], char *envp[])
   }
   
   printFlags(&duflags);
-
+  
   return 0;
 }
 
 
-void initFlags(flags *flags){
+void initFlags(flags *flags, char *envp[]){
+
+  int i=0;
+  while (envp[i] != NULL)
+    i++;
+  flags->envip = malloc( sizeof(char*) * i-1 );
+  i=0;
+  while (envp[i] != NULL)
+  {
+    flags->envip[i] = envp[i];
+    i++;
+  }
+  
   flags->all = 0;
   flags->bytes = 0;
   flags->blockSize = 0;
@@ -113,4 +125,12 @@ void printFlags(flags *flags){
   printf("-S OR --separate-dirs : %d\n", flags->separateDirs);
   printf("--max-depth=N : %d\n", flags->maxDepth);
   printf("N : %d\n", flags->maxDepthValue);
+
+  // Enviroment Variables print
+  /* int i=0;
+  while (flags->envip[i] != NULL)
+  {
+    printf("%s\n", flags->envip[i]);
+    i++;
+  } */
 }
