@@ -7,7 +7,7 @@ echo
 cd src
 
 if gcc -Wall -o simpledu simpledu.c; then
-./simpledu -a -aa
+./simpledu -a -b -l -L -S
 else 
 echo "COMPILATION ERROR";
 fi 
