@@ -2,17 +2,14 @@
 
 int main(int argc, char const *argv[], char *envp[])
 {
-  // Objetivo 1:
-  // Receber, processar e guardar os
-  //  argumentos da linha de comandos e as variáveis de ambiente;
   flags duflags; initFlags(&duflags, envp);
 
   if (argc == 1)
     printf("Uso ./simpledu <dir> <flag1> <flag2> ..\n");
-  else if (argc == 2)
-  {
+  else if (argc == 2){
     // ver página 1, ultimos pontos: "Por omissão, o comando du:"
-    // acrescentar estes pontos na struct flags
+    // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
+    duflags.blockSize = 1;
     duflags.blockSizeValue = 1024; //default size
   }
   else{
@@ -55,7 +52,7 @@ void initFlags(flags *flags, char *envp[]){
 int fillFlagsStruct(flags *flags, int argc, char const *argv[])
 {
   for (unsigned int i = 1; i < argc; i++)
-  {
+  {  
     if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0)
     {
       if (flags->all == 1) return 1;

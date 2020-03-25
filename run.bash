@@ -7,7 +7,7 @@ echo
 cd src
 
 if gcc -Wall -o simpledu simpledu.c; then
-./simpledu -a --block-size=4096 -l --max-depth=3 -L -S
+./simpledu -l ../TestDir -a --block-size=4096 --max-depth=3 -L -S
 else 
 echo "COMPILATION ERROR";
 fi 
