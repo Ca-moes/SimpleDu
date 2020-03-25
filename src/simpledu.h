@@ -20,6 +20,8 @@ typedef struct Flags flags;
 
 void initFlags(flags *flags);
 
+// http://www.cplusplus.com/reference/cstring/strstr/
+// http://www.cplusplus.com/reference/cstring/strcmp/
 // Returns 0 if okay, 1 otherwise
 int fillFlagsStruct(flags *flags, int argc, char const *argv[]);
 

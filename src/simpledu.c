@@ -69,7 +69,22 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       if (flags->separateDirs == 1) return 1;
       else flags->separateDirs = 1;
     } 
-    
+    else if (strcmp(argv[i], "-B") == 0 || strstr(argv[i],"--block-size=") != NULL)
+    {
+      if (flags->blockSize == 1) return 1;
+      else {
+        flags->blockSize = 1;
+        // pôr valor de SIZE em flags->blockSizeValue
+      }
+    }
+    else if (strstr(argv[i],"--max-depth=") != NULL)
+    {
+      if (flags->maxDepth == 1) return 1;
+      else {
+        flags->maxDepth = 1;
+        // pôr valor de N em flags->maxdepthvalue
+      }
+    }
   }
   return 0;
 }
