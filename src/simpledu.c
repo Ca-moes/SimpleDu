@@ -75,6 +75,13 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       else {
         flags->blockSize = 1;
         // pôr valor de SIZE em flags->blockSizeValue
+        char tmp[18];
+        strcpy(tmp, argv[i]);
+        char *start = &tmp[13];
+        char *end = &tmp[strlen(tmp)];
+        char *substr = (char *)calloc(1, end - start + 1);
+        memcpy(substr, start, end - start);
+        flags->blockSizeValue = atoi(substr);
       }
     }
     else if (strstr(argv[i],"--max-depth=") != NULL)
@@ -83,6 +90,13 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       else {
         flags->maxDepth = 1;
         // pôr valor de N em flags->maxdepthvalue
+        char tmp[18];
+        strcpy(tmp, argv[i]);
+        char *start = &tmp[12];
+        char *end = &tmp[strlen(tmp)];
+        char *substr = (char *)calloc(1, end - start + 1);
+        memcpy(substr, start, end - start);
+        flags->maxDepthValue = atoi(substr);
       }
     }
   }
