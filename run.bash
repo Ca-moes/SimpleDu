@@ -6,7 +6,7 @@ echo
 
 cd src
 
-if gcc -Wall -o simpledu simpledu.c; then
+if gcc -Wall -o simpledu simpledu.c regfile.c; then
 ./simpledu -l ../TestDir -a --block-size=4096 --max-depth=3 -L -S
 else 
 echo "COMPILATION ERROR";

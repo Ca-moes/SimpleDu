@@ -1,8 +1,10 @@
 #include "simpledu.h"
+#include "regfile.h"
 
 int main(int argc, char const *argv[], char *envp[])
 {
-  flags duflags; initFlags(&duflags, envp);
+  flags duflags; initFlags(&duflags, envp); initRegister();
+  regCommand(argc,argv);
 
   if (argc == 1)
     printf("Uso ./simpledu <dir> <flag1> <flag2> ..\n");
@@ -21,7 +23,8 @@ int main(int argc, char const *argv[], char *envp[])
   
   printFlags(&duflags);
   
-  return 0;
+  regExit(0);
+  //return 0;
 }
 
 
@@ -124,10 +127,10 @@ void printFlags(flags *flags){
   printf("N : %d\n", flags->maxDepthValue);
 
   // Enviroment Variables print
-  /* int i=0;
+  /*int i=0;
   while (flags->envip[i] != NULL)
   {
     printf("%s\n", flags->envip[i]);
     i++;
-  } */
+  }*/
 }
