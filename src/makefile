@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall
 OBJS = simpledu.o regfile.o
 XHDRS = simpledu.h regfile.h
-EXEC = simpledu.exe
+EXEC = simpledu
 
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@

@@ -82,7 +82,7 @@ int regSendMessage(int fd, void *buf, size_t n){
     double instant;
 
     instant = (actiontime - begintime)/(CLOCKS_PER_SEC / (double) 1000.0);
- 
+
     fprintf(fp, "%.2f - %.8d - SEND_PIPE -", instant, getpid());
 
     for(int i=0;i<n;i++){ //print bytes of the message for now
