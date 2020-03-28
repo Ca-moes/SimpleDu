@@ -1,3 +1,6 @@
+#ifndef REGFILE_H
+#define REGFILE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -46,3 +49,5 @@ int regSendMessage(int fd, void *buf, size_t n);
 function to receive a message using pipe and log it in the file
 */
 int regReceiveMessage(int fd, void *buf, size_t n);
+
+#endif /*REGFILE_H*/
