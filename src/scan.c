@@ -12,12 +12,22 @@ int list_reg_files(flags *flags) {
   }
   chdir(flags->dir);
 
+  printf("flags->bytes: %d\n", flags->bytes);
+
   while ((dentry = readdir(dir)) != NULL) {
     stat(dentry->d_name, &stat_entry);
     if (S_ISREG(stat_entry.st_mode)) {
-      int fileSize = stat_entry.st_size;
-      int blocks = fileSize / (int)stat_entry.st_blksize;
-      printf("%8d\t%8d\t%25s\n", fileSize, blocks, dentry->d_name);
+
+      if (flags->bytes) {
+        int fileSize = stat_entry.st_size;
+        printf("%-d\t%-25s\n", fileSize, dentry->d_name);
+      }
+
+      else {
+        int fileSize = stat_entry.st_size;
+        int numBlocks = fileSize / stat_entry.st_blksize;
+        printf("%-d\t%-25s\n", numBlocks, dentry->d_name);
+      }
     }
   }
   return 0; 
