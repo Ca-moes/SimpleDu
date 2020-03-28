@@ -12,8 +12,6 @@ int list_reg_files(flags *flags) {
   }
   chdir(flags->dir);
 
-  printf("flags->bytes: %d\n", flags->bytes);
-
   while ((dentry = readdir(dir)) != NULL) {
     stat(dentry->d_name, &stat_entry);
     if (S_ISREG(stat_entry.st_mode)) {
