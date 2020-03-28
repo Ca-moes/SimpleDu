@@ -9,7 +9,7 @@ void initRegister(){
     regfile = getenv("LOG_FILENAME");
 
     if(regfile!=NULL){
-        fp=fopen(regfile,"a");
+        fp=fopen(regfile,"w");
         if(fp == NULL) {
             perror("Error opening file");
             exit(1);

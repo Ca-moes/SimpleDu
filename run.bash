@@ -1,12 +1,10 @@
 #!/bin/bash
-
 echo "CHANGE FLAGS IN BASH"
 
 cd src
 
 make 
 echo "----------------------------"
-
 
 # $? = 0 se compilou bem
 # $? = 2 otherwise
