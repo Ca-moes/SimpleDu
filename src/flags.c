@@ -24,6 +24,25 @@ void initFlags(flags *flags, char *envp[]){
   flags->maxDepthValue = 0;
 }
 
+int setFlags(flags *flags, int argc, char const *argv[]){
+  if (argc == 1){
+    printf("Use ./simpledu <dir> <flag1> <flag2> ..\n");
+    return 1;
+  }
+  else if (argc == 2){
+    // ver página 1, ultimos pontos: "Por omissão, o comando du:"
+    // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
+    flags->blockSize = 1;
+    flags->blockSizeValue = 1024; //default size
+  }
+  else{
+    if (fillFlagsStruct(flags, argc, argv) != 0){
+      return 1;
+    }
+  }
+  return 0;
+}
+
 int fillFlagsStruct(flags *flags, int argc, char const *argv[])
 {
   for (unsigned int i = 1; i < argc; i++)
