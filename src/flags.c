@@ -5,7 +5,8 @@ void initFlags(flags *flags, char *envp[]){
   int i=0;
   while (envp[i] != NULL)
     i++;
-  flags->envip = malloc( sizeof(char*) * i-1 );
+  flags->envip = malloc( sizeof(char*) * (i+1) );
+
   i=0;
   while (envp[i] != NULL)
   {
@@ -124,10 +125,10 @@ void printFlags(flags *flags){
   printf("N : %d\n", flags->maxDepthValue);
 
   // Enviroment Variables print
-  /*int i=0;
+  int i=0;
   while (flags->envip[i] != NULL)
   {
     printf("%s\n", flags->envip[i]);
     i++;
-  }*/
+  }
 }

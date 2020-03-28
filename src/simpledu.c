@@ -2,8 +2,9 @@
 
 int main(int argc, char const *argv[], char *envp[])
 {
-  flags duflags; initFlags(&duflags, envp); initRegister();
+  flags duflags; initRegister(); initFlags(&duflags, envp);
   regCommand(argc,argv);
+  printFlags(&duflags);
 
   if (setFlags(&duflags, argc, argv))
   {
@@ -16,6 +17,6 @@ int main(int argc, char const *argv[], char *envp[])
     printf("Read Dir Error\n");
     regExit(1);
   }
-  
+  exit(0);
   regExit(0);
 }
