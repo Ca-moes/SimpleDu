@@ -15,7 +15,9 @@ int list_reg_files(flags *flags) {
   while ((dentry = readdir(dir)) != NULL) {
     stat(dentry->d_name, &stat_entry);
     if (S_ISREG(stat_entry.st_mode)) {
-      printf("%-8d\t%25s\n", (int)stat_entry.st_blksize, dentry->d_name);
+      int fileSize = stat_entry.st_size;
+      int blocks = fileSize / (int)stat_entry.st_blksize;
+      printf("%8d\t%8d\t%25s\n", fileSize, blocks, dentry->d_name);
     }
   }
   return 0; 
