@@ -1,3 +1,6 @@
+#ifndef FLAGS_H
+#define FLAGS_H
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,3 +34,5 @@ int setFlags(flags *flags, int argc, char const *argv[]);
 int fillFlagsStruct(flags *flags, int argc, char const *argv[]);
 
 void printFlags(flags *flags);
+
+#endif /*FLAGS_H*/

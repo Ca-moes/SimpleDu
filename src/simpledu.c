@@ -11,7 +11,7 @@ int main(int argc, char const *argv[], char *envp[])
     regExit(1);
   }
   
-  if (list_reg_files(duflags.dir))
+  if (list_reg_files(&duflags))
   {
     printf("Read Dir Error\n");
     regExit(1);
