@@ -1,6 +1,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <errno.h>
 
 struct Flags
 {
@@ -27,3 +32,5 @@ void initFlags(flags *flags, char *envp[]);
 int fillFlagsStruct(flags *flags, int argc, char const *argv[]);
 
 void printFlags(flags *flags);
+
+int list_reg_files(char *argv[]);
