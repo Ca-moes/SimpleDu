@@ -1,16 +1,16 @@
 #include "scan.h"
 
-int list_reg_files(char *argv[]) {
+int list_reg_files(char *dirt) {
   
   DIR *dir;
   struct dirent *dentry;
   struct stat stat_entry;
 
-  if ((dir = opendir(argv[1])) == NULL) {
-    perror(argv[1]);
-    return 2;
+  if ((dir = opendir(dirt)) == NULL) {
+    perror(dirt);
+    return 1;
   }
-  chdir(argv[1]);
+  chdir(dirt);
 
   while ((dentry = readdir(dir)) != NULL) {
     stat(dentry->d_name, &stat_entry);

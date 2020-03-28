@@ -83,11 +83,17 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
         flags->maxDepthValue = atoi(substr);
       }
     }
+    else if (argv[i][1] != '-'){
+      flags->dir = malloc( sizeof(argv[i]));
+      strcpy(flags->dir, argv[i]);
+    }
+    
   }
   return 0;
 }
 
 void printFlags(flags *flags){
+  printf("Current Dir : %s\n", flags->dir);
   printf("-a OR --all : %d\n", flags->all);
   printf("-b OR --bytes : %d\n", flags->bytes);
   printf("-B OR --block-size=SIZE : %d\n", flags->blockSize);

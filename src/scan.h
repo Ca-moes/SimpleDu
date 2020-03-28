@@ -6,4 +6,7 @@
 #include <dirent.h>
 #include <errno.h>
 
-int list_reg_files(char *argv[]);
+/* Read files in dirt
+  Returns 0 OK; 1 otherwise
+*/
+int list_reg_files(char *dirt);

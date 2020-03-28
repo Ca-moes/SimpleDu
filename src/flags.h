@@ -8,6 +8,7 @@ struct Flags
   // https://www.tutorialspoint.com/cprogramming/c_structures.htm
   // Bit Fields
   char **envip;
+  char *dir;
   unsigned int all : 1;  // -a OR --all
   unsigned int bytes : 1; // -b OR --bytes
   unsigned int blockSize : 1; // -B OR --block-size=SIZE
