@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdint.h>
+#include "flags.h"
 
 void initRegister();
 
@@ -22,7 +23,7 @@ void regCommand(int argc,char const *argv[]);
 /*
 function to make a new process and log it in the file
 */
-pid_t regFork();
+pid_t regFork(flags *flags);
 
 /*
 function to exit a process and log it in the file
