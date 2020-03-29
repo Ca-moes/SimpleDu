@@ -8,7 +8,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
+#include <wait.h>
 #include "flags.h"
+#include "regfile.h"
 
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise

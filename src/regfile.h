@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdint.h>
+#include "flags.h"
+#include <math.h>
 
 void initRegister();
 
@@ -22,7 +24,7 @@ void regCommand(int argc,char const *argv[]);
 /*
 function to make a new process and log it in the file
 */
-pid_t regFork();
+pid_t regFork(flags *flags);
 
 /*
 function to exit a process and log it in the file
@@ -49,5 +51,7 @@ int regSendMessage(int fd, void *buf, size_t n);
 function to receive a message using pipe and log it in the file
 */
 int regReceiveMessage(int fd, void *buf, size_t n);
+
+double getTimefromBeggining(struct timespec action_time);
 
 #endif /*REGFILE_H*/
