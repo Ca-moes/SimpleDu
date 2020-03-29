@@ -125,10 +125,10 @@ void printFlags(flags *flags){
   printf("N : %d\n", flags->maxDepthValue);
 
   // Enviroment Variables print
-  int i=0;
+  /*int i=0;
   while (flags->envip[i] != NULL)
   {
     printf("%s\n", flags->envip[i]);
     i++;
-  }
+  }*/
 }

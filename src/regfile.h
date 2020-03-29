@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "flags.h"
+#include <math.h>
 
 void initRegister();
 
@@ -50,5 +51,7 @@ int regSendMessage(int fd, void *buf, size_t n);
 function to receive a message using pipe and log it in the file
 */
 int regReceiveMessage(int fd, void *buf, size_t n);
+
+double getTimefromBeggining(struct timespec action_time);
 
 #endif /*REGFILE_H*/

@@ -17,6 +17,6 @@ int main(int argc, char const *argv[], char *envp[])
     printf("Read Dir Error\n");
     regExit(1);
   }
-  exit(0);
+
   regExit(0);
 }
