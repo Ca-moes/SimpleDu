@@ -5,10 +5,9 @@ char *regfile;
 FILE *fp;
 
 void initRegister(){
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     char inputfile[50];
     regfile = getenv("LOG_FILENAME");
-
-    clock_gettime(CLOCK_MONOTONIC, &start_time);
     
     if (regfile==NULL){
         printf("No log file defined!\nInsert file:\n");

@@ -1,17 +1,26 @@
 #include "flags.h"
 
-void initFlags(flags *flags, char *envp[]){
+extern char **environ;
 
+void initFlags(flags *flags, char *envp[]){
+  
   int i=0;
   while (envp[i] != NULL)
     i++;
-  flags->envip = malloc( sizeof(char*) * (i+1) );
-
+  flags->envip = malloc( sizeof(char*) * (i+2) ); //+2 porque agora este array vai ter o LOG_FILENAME + o NULL para o ciclo de print
+  /*
   i=0;
   while (envp[i] != NULL)
   {
     flags->envip[i] = envp[i];
     i++;
+  }*/
+  
+  int j = 0;
+  char *s = *environ;
+  for (; s; j++) {
+    flags->envip[j]=s;
+    s = *(environ+j);
   }
   
   flags->all = 0;
@@ -126,7 +135,7 @@ void printFlags(flags *flags){
 
   // Enviroment Variables print
   /*int i=0;
-  while (flags->envip[i] != NULL)
+  while (flags->envip[i])
   {
     printf("%s\n", flags->envip[i]);
     i++;
