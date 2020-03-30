@@ -15,7 +15,7 @@ int list_reg_files(flags *flags,char *path, struct stat stat_entry) {
   return 0; 
 }
 
-void listdir(char* directory_path,flags *dflags)
+void listThings(char* directory_path,flags *dflags)
 {
     DIR *dir;
     struct dirent *dentry;
@@ -46,14 +46,14 @@ void listdir(char* directory_path,flags *dflags)
             dflags->dir=dentry->d_name; //update flag with path of directory we will analyse
 
             if ((strcmp(dentry->d_name, ".") == 0 || strcmp(dentry->d_name, "..") == 0)) //avoid infinite recursion
-                continue;                                                                //we just want to make recursive calls to the directories inside "." that is our ../TestDir (first case)
+                continue;                                                                //we just want to make recursive calls to the directories inside "." not the direcotry itself
             if(dflags->maxDepthValue>0){ //only goes to subdirectory(create fork) if depth>0
               pid_t pids[1024];
               int pid_n=0;
               pids[pid_n] = regFork(dflags);  //saves child pids in array to wait for them later
 
               if (pids[pid_n]==0){
-                listdir(new_path,dflags); //recursive call
+                listdir(new_path,dflags); //new processes treats subdirectory making a recursive
                 regExit(0);
               }
               else{

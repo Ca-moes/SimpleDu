@@ -17,6 +17,6 @@
 */
 int list_reg_files(flags *flags,char *path, struct stat stat_entry);
 
-void listdir(char* directory_path,flags *dflags);
+void listThings(char* directory_path,flags *dflags);
 
 #endif /*SCAN_H*/

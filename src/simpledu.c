@@ -13,7 +13,7 @@ int main(int argc, char const *argv[], char *envp[])
   printFlags(&duflags);
   
   chdir(duflags.dir);
-  listdir(".",&duflags);
+  listThings(".",&duflags);
 
   /*if (list_reg_files(&duflags))
   {
