@@ -53,7 +53,7 @@ void listThings(char* directory_path,flags *dflags)
               pids[pid_n] = regFork(dflags);  //saves child pids in array to wait for them later
 
               if (pids[pid_n]==0){
-                listdir(new_path,dflags); //new processes treats subdirectory making a recursive
+                listThings(new_path,dflags); //new processes treats subdirectory making a recursive
                 regExit(0);
               }
               else{
