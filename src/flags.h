@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-struct Flags
+typedef struct Flags
 {
   // https://www.tutorialspoint.com/cprogramming/c_structures.htm
   // Bit Fields
@@ -19,10 +19,9 @@ struct Flags
   unsigned int countLinks : 1;  // -l OR --count-links
   unsigned int dereference : 1; // -L OR --dereference 
   unsigned int separateDirs : 1; // -S OR --separate-dirs
-  unsigned int maxDepth : 1; // --max-depth=N
+  unsigned int maxDepth : 1; // --max-depth=N   N=0 só lê dir atual, n=1 lê 1 subdir
   int maxDepthValue;
-};
-typedef struct Flags flags;
+}flags;
 
 void initFlags(flags *flags, char *envp[]);
 

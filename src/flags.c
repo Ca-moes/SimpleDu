@@ -102,7 +102,6 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       if (flags->maxDepth == 1) return 1;
       else {
         flags->maxDepth = 1;
-        // pôr valor de N em flags->maxdepthvalue
         char tmp[18];
         strcpy(tmp, argv[i]);
         char *start = &tmp[12];
@@ -112,11 +111,12 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
         flags->maxDepthValue = atoi(substr);
       }
     }
-    else if (argv[i][1] != '-'){
+    else if (argv[i][0] != '-'){
+      if(flags->dir != NULL)
+        exit(1);
       flags->dir = malloc( sizeof(argv[i]));
       strcpy(flags->dir, argv[i]);
     }
-    
   }
   return 0;
 }
@@ -134,10 +134,12 @@ void printFlags(flags *flags){
   printf("N : %d\n", flags->maxDepthValue);
 
   // Enviroment Variables print
-  /*int i=0;
-  while (flags->envip[i])
+  
+  /* int i=0;
+  while (flags->envip[i]!=NULL)
   {
     printf("%s\n", flags->envip[i]);
     i++;
-  }*/
+  } */
+ 
 }

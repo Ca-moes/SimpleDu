@@ -14,6 +14,10 @@
 #include "flags.h"
 #include <math.h>
 
+struct timespec start_time;
+char *regfile;
+FILE *fp;
+
 void initRegister();
 
 /*
