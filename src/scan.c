@@ -20,6 +20,7 @@ void listdir(char* directory_path,flags *dflags)
     DIR *dir;
     struct dirent *dentry;
     struct stat stat_entry;
+    dflags->maxDepthValue-=1; //decrements depth value when enters directory
 
     if ((dir = opendir(dflags->dir)) == NULL){
       perror(dflags->dir);
@@ -46,12 +47,14 @@ void listdir(char* directory_path,flags *dflags)
 
             if ((strcmp(dentry->d_name, ".") == 0 || strcmp(dentry->d_name, "..") == 0)) //avoid infinite recursion
                 continue;                                                                //we just want to make recursive calls to the directories inside "." that is our ../TestDir (first case)
-            
-            listdir(new_path,dflags);
+            if(dflags->maxDepthValue>0){
+              listdir(new_path,dflags);
+            }
             list_reg_files(dflags, new_path, stat_entry); //listing directories
         }
     }
     chdir("..");//go back to previous directory to continue listing things in there
     closedir(dir);
+    dflags->maxDepthValue+=1; //increases depth value leaving directory
     return;
 }
