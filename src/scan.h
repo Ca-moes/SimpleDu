@@ -15,6 +15,8 @@
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
-int list_reg_files(flags *flags);
+int list_reg_files(flags *flags,char *path, struct stat stat_entry);
+
+void listdir(char* directory_path,flags *dflags);
 
 #endif /*SCAN_H*/
