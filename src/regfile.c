@@ -2,17 +2,11 @@
 
 void initRegister(){
     clock_gettime(CLOCK_MONOTONIC, &start_time);
-    //char inputfile[50];
     regfile = getenv("LOG_FILENAME");
     
-    if (regfile==NULL){
-        /* printf("No log file defined!\nInsert file:\n");
-        scanf("%s",inputfile);
-        printf("export LOG_FILENAME='filename.txt' to set environment variable and log actions always in the same file\n");
- */             
+    if (regfile==NULL){ 
         regfile = "log.txt";
         setenv("LOG_FILENAME",regfile,1);
-        regfile = getenv("LOG_FILENAME");
     }
     fp=fopen(regfile,"w");
     if(fp == NULL) {

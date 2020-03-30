@@ -16,21 +16,23 @@ int list_reg_files(flags *flags) {
   while ((dentry = readdir(dir)) != NULL) {
     stat(dentry->d_name, &stat_entry);
     
+    // Ficheiros Regulares
     if (S_ISREG(stat_entry.st_mode)) {
+      if(flags->all){
+        if (flags->bytes) {
+          int fileSize = stat_entry.st_size;
+          printf("%-d\t./%-25s\n", fileSize, dentry->d_name);
+        }
 
-      if (flags->bytes) {
-        int fileSize = stat_entry.st_size;
-        printf("%-d\t./%-25s\n", fileSize, dentry->d_name);
-      }
-
-      else {
-        int fileSize = stat_entry.st_size;
-        int numBlocks = fileSize / stat_entry.st_blksize;
-        printf("%-d\t./%-25s\n", numBlocks, dentry->d_name);
+        else {
+          int fileSize = stat_entry.st_size;
+          int numBlocks = fileSize / stat_entry.st_blksize;
+          printf("%-d\t./%-25s\n", numBlocks, dentry->d_name);
+        }
       }
     }
-
-    else if (S_ISDIR(stat_entry.st_mode) && flags->maxDepthValue == 1) {
+    // Diretorios
+    else if (S_ISDIR(stat_entry.st_mode) && flags->maxDepthValue == 0) {
       if (strcmp(dentry->d_name, "..") == 0) continue;
 
       else if (flags->bytes) {
@@ -46,7 +48,6 @@ int list_reg_files(flags *flags) {
         else printf("%-d\t%-25s\n", numBlocks, dentry->d_name);
       }
     }
-
     else printf("--max-depth != 1\n");
   }
   return 0; 

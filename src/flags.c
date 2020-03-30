@@ -4,29 +4,22 @@ extern char **environ;
 
 void initFlags(flags *flags, char *envp[]){
   
-  int i=0;
-  while (envp[i] != NULL)
+  int i=0, j=0;
+  while (envp[i] != 0)
     i++;
-  flags->envip = malloc( sizeof(char*) * (i+2) ); //+2 porque agora este array vai ter o LOG_FILENAME + o NULL para o ciclo de print
-  /*
-  i=0;
-  while (envp[i] != NULL)
-  {
-    flags->envip[i] = envp[i];
-    i++;
-  }*/
+  flags->envip = malloc( sizeof(char*) * i+1 ); //+1 para o NULL
   
-  int j = 0;
-  char *s = *environ;
-  for (; s; j++) {
-    flags->envip[j]=s;
-    s = *(environ+j);
+  while (j<i)
+  {
+    flags->envip[j] = envp[j];
+    j++;
   }
+  flags->envip[j] = NULL;
   
   flags->all = 0;
   flags->bytes = 0;
-  flags->blockSize = 0;
-  flags->blockSizeValue = 0;
+  flags->blockSize = 0; //default size not changed
+  flags->blockSizeValue = 1024; //default size
   flags->countLinks = 0;
   flags->dereference = 0;
   flags->separateDirs = 0;
@@ -43,7 +36,6 @@ int setFlags(flags *flags, int argc, char const *argv[]){
     // ver página 1, ultimos pontos: "Por omissão, o comando du:"
     // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
     flags->blockSize = 1;
-    flags->blockSizeValue = 1024; //default size
   }
   else{
     if (fillFlagsStruct(flags, argc, argv) != 0){
@@ -136,7 +128,7 @@ void printFlags(flags *flags){
   // Enviroment Variables print
   
   /* int i=0;
-  while (flags->envip[i]!=NULL)
+  while (flags->envip[i] != NULL)
   {
     printf("%s\n", flags->envip[i]);
     i++;
