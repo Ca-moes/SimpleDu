@@ -4,7 +4,7 @@ int list_reg_files(flags *flags,char *path, struct stat stat_entry) {
 
   if (flags->bytes) {
     int fileSize = stat_entry.st_size;
-    printf("%-d\t./%-25s\n", fileSize, path);
+    printf("%-d\t%-25s\n", fileSize, path);
   }
 
   else {
