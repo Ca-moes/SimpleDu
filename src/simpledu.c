@@ -13,13 +13,10 @@ int main(int argc, char const *argv[], char *envp[])
   printFlags(&duflags);
   
   chdir(duflags.dir);
-  listThings(".",&duflags);
-
-  /*if (list_reg_files(&duflags))
-  {
-    printf("Read Dir Error\n");
+  if(listThings(".",&duflags)){
+    printf("Error listing\n");
     regExit(1);
-  }*/
+  }
 
   regExit(0);
 }

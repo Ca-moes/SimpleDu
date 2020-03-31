@@ -15,7 +15,7 @@ int list_reg_files(flags *flags,char *path, struct stat stat_entry) {
   return 0; 
 }
 
-void listThings(char* directory_path,flags *dflags)
+int listThings(char* directory_path,flags *dflags)
 {
     DIR *dir;
     struct dirent *dentry;
@@ -24,7 +24,7 @@ void listThings(char* directory_path,flags *dflags)
 
     if ((dir = opendir(dflags->dir)) == NULL){
       perror(dflags->dir);
-      return;
+      return 1;
     }
     chdir(dflags->dir); //change to directory we are analysing
     
@@ -53,8 +53,11 @@ void listThings(char* directory_path,flags *dflags)
               pids[pid_n] = regFork(dflags);  //saves child pids in array to wait for them later
 
               if (pids[pid_n]==0){
-                listThings(new_path,dflags); //new processes treats subdirectory making a recursive
+                listThings(new_path,dflags); //new process treats subdirectory making a recursive call
                 regExit(0);
+              }else if (pids[pid_n]<0){ //error on fork()
+                printf("Error making fork\n");
+                return 1;
               }
               else{
                 int status;
@@ -71,5 +74,5 @@ void listThings(char* directory_path,flags *dflags)
     chdir("..");//go back to previous directory to continue listing things in there
     closedir(dir);
     dflags->maxDepthValue+=1; //increases depth value leaving directory
-    return;
+    return 0;
 }
