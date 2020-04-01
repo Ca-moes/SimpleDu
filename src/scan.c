@@ -19,6 +19,33 @@ int list_reg_files(flags *flags, char *path, struct stat stat_entry)
   return 0;
 }
 
+int symlnkBS(char *path, const char* SLname, flags *flags){
+  char buf[50];
+  printf("INsymlnkBS%s  ", path);
+  ssize_t len = readlink (SLname, buf, sizeof(buf)-1);
+  if (len == -1) {
+    return 1;
+  } else
+  {
+    buf[len] = '\0';
+    char newpath[len];
+    strcpy(newpath, buf);
+    printf("%s\n", newpath);
+  }
+  return 0;
+}
+
+int listThingsSB(flags *flags,char *path, struct stat stat_entry, char *printpath){
+  //lista diretório em path com o prefixo printpath
+  struct dirent *dentry;
+  while ((dentry = readdir(dir)) != NULL)
+  {
+    /* code */
+  }
+  
+}
+
+
 int listThings(char *directory_path, flags *dflags)
 {
   DIR *dir;
@@ -47,7 +74,9 @@ int listThings(char *directory_path, flags *dflags)
     if (S_ISLNK(checksl.st_mode))
     {
       if (dflags->all)
-        list_reg_files(dflags, new_path, checksl); //listing files
+      {
+        symlnkBS(new_path, dentry->d_name, dflags);
+      }
     }
     // Ficheiros Regulares
     if (S_ISREG(stat_entry.st_mode))
