@@ -11,12 +11,20 @@ int main(int argc, char const *argv[], char *envp[])
     regExit(1);
   }
   printFlags(&duflags);
-  
+
   chdir(duflags.dir);
-  if(listThings(".",&duflags)){
+
+  Data info;
+  info.objects= malloc(sizeof(Object)*32);
+  info.index=0;
+  info.max_size=32;
+
+  if(listThings(".",&info, &duflags)){
     printf("Error listing\n");
     regExit(1);
   }
+
+  list_reg_files(&duflags,&info);
 
   regExit(0);
 }
