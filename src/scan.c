@@ -2,16 +2,12 @@
 
 int list_reg_files(flags *flags, char *path, struct stat stat_entry)
 {
+  int fileSize = stat_entry.st_size;
 
   if (flags->bytes)
-  {
-    int fileSize = stat_entry.st_size;
     printf("%-d\t./%-25s\n", fileSize, path);
-  }
-
   else
   {
-    int fileSize = stat_entry.st_size;
     int numBlocks = fileSize / flags->blockSizeValue;
     printf("%-d\t%-25s\n", numBlocks, path);
   }
@@ -19,32 +15,60 @@ int list_reg_files(flags *flags, char *path, struct stat stat_entry)
   return 0;
 }
 
-int symlnkBS(char *path, const char* SLname, flags *flags){
+int symlnkBS(char *path, const char *SLname, flags *flags)
+{
+  char pathcpy[128];
   char buf[50];
-  printf("INsymlnkBS%s  ", path);
-  ssize_t len = readlink (SLname, buf, sizeof(buf)-1);
-  if (len == -1) {
-    return 1;
-  } else
+
+  strcpy(pathcpy, path);
+  ssize_t len = readlink(SLname, buf, sizeof(buf) - 1);
+  if (len == -1)
   {
-    buf[len] = '\0';
+    return 1;
+  }
+  else
+  {
     char newpath[len];
+    struct stat stats;
+
+    buf[len] = '\0';
     strcpy(newpath, buf);
-    printf("%s\n", newpath);
+    stat(newpath, &stats);
+    if (S_ISDIR(stats.st_mode))
+    {
+      printf("\t%s %s", pathcpy, newpath);
+      printf("  DIR\n");
+    }
+    else if (S_ISREG(stats.st_mode))
+    {
+      // printa path + /FILE
+      int fileSize = stats.st_size;
+      char *pch = strrchr(newpath, '/');
+      strcat(pathcpy, pch);
+
+      if (flags->bytes)
+        printf("%-d\t./%-25s\n", fileSize, pathcpy);
+      else
+      {
+        int numBlocks = fileSize / flags->blockSizeValue;
+        printf("%-d\t%-25s\n", numBlocks, pathcpy);
+      }
+
+      return 0;
+    }
   }
   return 0;
 }
 
-int listThingsSB(flags *flags,char *path, struct stat stat_entry, char *printpath){
+int listThingsSB(flags *flags, char *path, struct stat stat_entry, char *printpath)
+{
   //lista diretório em path com o prefixo printpath
-  struct dirent *dentry;
+  /* struct dirent *dentry;
   while ((dentry = readdir(dir)) != NULL)
   {
-    /* code */
-  }
-  
+  } */
+  return 0;
 }
-
 
 int listThings(char *directory_path, flags *dflags)
 {
