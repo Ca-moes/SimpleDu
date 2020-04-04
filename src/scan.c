@@ -5,7 +5,7 @@ int list_reg_files(flags *flags, char *path, struct stat stat_entry)
   int fileSize = stat_entry.st_size;
 
   if (flags->bytes)
-    printf("%-d\t./%-25s\n", fileSize, path);
+    printf("%-d\t%-25s\n", fileSize, path);
   else
   {
     int numBlocks = fileSize / flags->blockSizeValue;
@@ -46,7 +46,7 @@ int symlnkBS(char *path, const char *SLname, flags *flags)
       strcat(pathcpy, pch);
 
       if (flags->bytes)
-        printf("%-d\t./%-25s\n", fileSize, pathcpy);
+        printf("%-d\t%-25s\n", fileSize, pathcpy);
       else
       {
         int numBlocks = fileSize / flags->blockSizeValue;
@@ -84,7 +84,7 @@ int listThingsSB(flags *flags, char *path, struct stat stat_entry, char *printpa
     strcat(printpathvar, dentry->d_name);
 
     if (flags->bytes)
-      printf("%-d\t./%-25s\n", fileSize, printpathvar);
+      printf("%-d\t%-25s\n", fileSize, printpathvar);
     else
     {
       int numBlocks = fileSize / flags->blockSizeValue;
@@ -122,7 +122,7 @@ int listThings(char *directory_path, flags *dflags)
     // Links Simbolicos
     if (S_ISLNK(checksl.st_mode))
     {
-      if (dflags->all)
+      if (dflags->all && dflags->dereference)
       {
         symlnkBS(new_path, dentry->d_name, dflags);
       }
