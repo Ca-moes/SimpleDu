@@ -36,8 +36,7 @@ int symlnkBS(char *path, const char *SLname, flags *flags)
     stat(newpath, &stats);
     if (S_ISDIR(stats.st_mode))
     {
-      printf("\t%s %s", pathcpy, newpath);
-      printf("  DIR\n");
+      listThingsSB(flags, newpath, stats, pathcpy);
     }
     else if (S_ISREG(stats.st_mode))
     {
@@ -63,10 +62,36 @@ int symlnkBS(char *path, const char *SLname, flags *flags)
 int listThingsSB(flags *flags, char *path, struct stat stat_entry, char *printpath)
 {
   //lista diretório em path com o prefixo printpath
-  /* struct dirent *dentry;
+  struct dirent *dentry;
+  char printpathvar[128];
+  char pathvar[128];
+
+  
+  strcat(printpath, "/");
+  DIR *dir = opendir(path);
   while ((dentry = readdir(dir)) != NULL)
   {
-  } */
+    strcpy(printpathvar, printpath);
+    strcpy(pathvar, path);
+    strcat(pathvar, "/");
+    strcat(pathvar, dentry->d_name);
+    stat(pathvar, &stat_entry);
+    int fileSize = stat_entry.st_size;
+
+    if ((strcmp(dentry->d_name, ".") == 0 || strcmp(dentry->d_name, "..") == 0)) //avoid infinite recursion
+        continue;                                                                  //we just want to make recursive calls to the directories inside "." not the direcotry itself
+    
+    strcat(printpathvar, dentry->d_name);
+
+    if (flags->bytes)
+      printf("%-d\t./%-25s\n", fileSize, printpathvar);
+    else
+    {
+      int numBlocks = fileSize / flags->blockSizeValue;
+      printf("%-d\t%-25s\n", numBlocks, printpathvar);
+    }
+    
+  }
   return 0;
 }
 
