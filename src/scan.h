@@ -20,7 +20,7 @@ typedef struct object{
 }Object;
 
 typedef struct data{
-    Object *objects;
+    Object *objects; //array of objects
     int index; //index aka number of objects
     int max_size; //max_size of objects array -> updated if needed
 }Data;

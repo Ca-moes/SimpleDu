@@ -55,23 +55,27 @@ int listThings(char* directory_path, Data *data, flags *dflags)
     chdir(dflags->dir); //change to directory we are analysing
     
     while ((dentry = readdir(dir)) != NULL) {
-      stat(dentry->d_name, &stat_entry);
-
+      if (dflags->dereference)
+        stat(dentry->d_name, &stat_entry);
+      else
+        lstat(dentry->d_name, &stat_entry);
+      
       char new_path[1024]=""; //building new path of the file or directory
       strcat(new_path,directory_path);
       strcat(new_path,"/");
       strcat(new_path,dentry->d_name);
-
+            
         // Ficheiros Regulares
         if (S_ISREG(stat_entry.st_mode)) {
-            if (data->index == data->max_size) {
+            if (data->index == data->max_size) { //see if we can insert another element on objects array otherwise we duplicate the memory allocated
               data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object));
-              data->max_size *= 2;
+              data->max_size *= 2; //updates max size
             }
-            strcpy(data->objects[data->index].path,new_path);
+            
+            strcpy(data->objects[data->index].path,new_path); //Adding file to array
             data->objects[data->index].stat_entry=stat_entry;
             data->objects[data->index].dir=false;
-            data->index+=1;
+            data->index+=1; //updates index
         }
         // Diretorios
         else if (S_ISDIR(stat_entry.st_mode)) {
@@ -84,19 +88,19 @@ int listThings(char* directory_path, Data *data, flags *dflags)
               pipe(pd);
               pids[pid_n] = regFork(dflags);  //saves child pids in array to wait for them later
               
-              if (pids[pid_n]==0){
+              if (pids[pid_n]==0){ //child process
                 listThings(new_path,data,dflags); //new process treats subdirectory making a recursive call
                 
                 close(pd[0]);
-                write(pd[1],&data->index,sizeof(int));
-                write(pd[1],data->objects,sizeof(Object)*(data->index));
+                write(pd[1],&data->index,sizeof(int)); //send index to father process (number of elements we have now)
+                write(pd[1],data->objects,sizeof(Object)*(data->index)); //send the array of objects updated
                 regExit(0);
 
               }else if (pids[pid_n]<0){ //error on fork()
                 printf("Error making fork\n");
                 return 1;
               }
-              else{
+              else{ //parent process
                 int status;
                 
                 for (int i=0;i<=pid_n;i++){
@@ -106,28 +110,27 @@ int listThings(char* directory_path, Data *data, flags *dflags)
 
                 int index;
                 close(pd[1]);
-                read(pd[0],&index,sizeof(int));
+                read(pd[0],&index,sizeof(int)); //read the index sent by child (total number of elements)
                 
-                while(index > data->max_size){
-                  data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object));
+                while(index > data->max_size){ //if the size of the array with the new elements is larger than max size we need to reallocate
+                  data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object)); //while loop because reallocating once may not be enough (in case a directory having a lot of subdirectories and files)
                 }
                 
-                read(pd[0], data->objects, sizeof(Object)*(index));
-                data->index=index;
+                read(pd[0], data->objects, sizeof(Object)*(index)); //replace parent array with the child array updated
+                data->index=index; //updating parent index
 
               }
-            if (data->index == data->max_size) {
+            if (data->index == data->max_size) { //checking again if we can insert another object on array
               data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object));
               data->max_size *= 2;
             }
-            strcpy(data->objects[data->index].path,new_path);
+            strcpy(data->objects[data->index].path,new_path); //adding directory to array
             data->objects[data->index].stat_entry=stat_entry;
             data->objects[data->index].dir=true;
-            data->index+=1;
+            data->index+=1; //updates index
         }
     }
     chdir("..");//go back to previous directory to continue listing things in there
     closedir(dir);
-
     return 0;
 }
