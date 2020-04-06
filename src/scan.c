@@ -38,6 +38,17 @@ int list_reg_files(flags *flags,Data *info) {
       }
     }
   }
+  // . directory
+  if (flags->bytes) {
+    int fileSize = info->all_size;
+    printf("%-d\t%-25s\n", fileSize, ".");
+  }
+
+  else {
+    int fileSize = info->all_size;
+    int numBlocks = fileSize / flags->blockSizeValue;
+    printf("%-d\t%-25s\n", numBlocks, ".");
+  }
   
   return 0; 
 }
