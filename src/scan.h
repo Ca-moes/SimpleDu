@@ -17,12 +17,14 @@ typedef struct object{
   struct stat stat_entry;
   char path[100];
   bool dir;
+  int size;
 }Object;
 
 typedef struct data{
     Object *objects; //array of objects
     int index; //index aka number of objects
     int max_size; //max_size of objects array -> updated if needed
+    int all_size;
 }Data;
 
 /* Read files in flags->dir

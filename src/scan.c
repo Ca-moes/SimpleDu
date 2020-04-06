@@ -14,24 +14,24 @@ int list_reg_files(flags *flags,Data *info) {
     if (slashNumber(info->objects[i].path)<=flags->maxDepthValue){
       if(flags->all){
           if (flags->bytes) {
-          int fileSize = info->objects[i].stat_entry.st_size;
+          int fileSize = info->objects[i].size;
           printf("%-d\t%-25s\n", fileSize, info->objects[i].path);
         }
 
         else {
-          int fileSize = info->objects[i].stat_entry.st_size;
+          int fileSize = info->objects[i].size;
           int numBlocks = fileSize / flags->blockSizeValue;
           printf("%-d\t%-25s\n", numBlocks, info->objects[i].path);
         }
       }
       else if (info->objects[i].dir){
         if (flags->bytes) {
-          int fileSize = info->objects[i].stat_entry.st_size;
+          int fileSize = info->objects[i].size;
           printf("%-d\t%-25s\n", fileSize, info->objects[i].path);
         }
 
         else {
-          int fileSize = info->objects[i].stat_entry.st_size;
+          int fileSize = info->objects[i].size;
           int numBlocks = fileSize / flags->blockSizeValue;
           printf("%-d\t%-25s\n", numBlocks, info->objects[i].path);
         }
@@ -75,6 +75,7 @@ int listThings(char* directory_path, Data *data, flags *dflags)
             strcpy(data->objects[data->index].path,new_path); //Adding file to array
             data->objects[data->index].stat_entry=stat_entry;
             data->objects[data->index].dir=false;
+            data->objects[data->index].size=stat_entry.st_size;
             data->index+=1; //updates index
         }
         // Diretorios
@@ -118,7 +119,7 @@ int listThings(char* directory_path, Data *data, flags *dflags)
                 
                 read(pd[0], data->objects, sizeof(Object)*(index)); //replace parent array with the child array updated
                 data->index=index; //updating parent index
-
+                data->all_size+=data->objects[data->index].size;
               }
             if (data->index == data->max_size) { //checking again if we can insert another object on array
               data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object));
@@ -127,6 +128,7 @@ int listThings(char* directory_path, Data *data, flags *dflags)
             strcpy(data->objects[data->index].path,new_path); //adding directory to array
             data->objects[data->index].stat_entry=stat_entry;
             data->objects[data->index].dir=true;
+            data->objects[data->index].size=data->objects[data->index].stat_entry.st_size;
             data->index+=1; //updates index
         }
     }
