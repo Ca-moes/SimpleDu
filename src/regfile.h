@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <inttypes.h>
 #include <signal.h>
 #include <unistd.h>
@@ -28,7 +29,7 @@ void regCommand(int argc,char const *argv[]);
 /*
 function to make a new process and log it in the file
 */
-pid_t regFork(flags *flags);
+void regNewProcess(flags *flags);
 
 /*
 function to exit a process and log it in the file
@@ -49,12 +50,14 @@ int regSendSignal(pid_t dpid,int signo);
 /*
 function to send a message using pipe and log it in the file
 */
-int regSendMessage(int fd, long int size, size_t n);
+void regSendMessage(int fd, long int *size, size_t n);
 
 /*
 function to receive a message using pipe and log it in the file
 */
-int regReceiveMessage(int fd, long int size, size_t n);
+void regReceiveMessage(int fd, long int *size, size_t n);
+
+void regEntry(int size, char *path);
 
 double getTimefromBeggining(struct timespec action_time);
 

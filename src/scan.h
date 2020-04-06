@@ -16,7 +16,7 @@
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
-void list_reg_files(bool dir, flags *flags,char *path, struct stat stat_entry);
+void list_reg_files(flags *flags,char *path, struct stat stat_entry);
 
 int listThings(char* directory_path, int depth, flags *dflags);
 
