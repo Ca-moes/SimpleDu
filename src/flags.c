@@ -24,7 +24,7 @@ void initFlags(flags *flags, char *envp[]){
   flags->dereference = 0;
   flags->separateDirs = 0;
   flags->maxDepth = 0;
-  flags->maxDepthValue = 0;
+  flags->maxDepthValue = INT_MAX;
 }
 
 int setFlags(flags *flags, int argc, char const *argv[]){
