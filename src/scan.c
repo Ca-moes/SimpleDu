@@ -1,44 +1,19 @@
 #include "scan.h"
 
-void list_reg_files(int dir, flags *flags,char *path, struct stat stat_entry) {
-      if(flags->all){
-          if (flags->bytes) {
-          int fileSize = stat_entry.st_size;
-          printf("%-d\t%-25s\n", fileSize, path);
-        }
-
-        else {
-          int fileSize = stat_entry.st_size;
-          int numBlocks = fileSize / flags->blockSizeValue;
-          printf("%-d\t%-25s\n", numBlocks, path);
-        }
-      }
-      else if (dir){
-        if (flags->bytes) {
-          int fileSize = stat_entry.st_size;
-          printf("%-d\t%-25s\n", fileSize, path);
-        }
-
-        else {
-          int fileSize = stat_entry.st_size;
-          int numBlocks = fileSize / flags->blockSizeValue;
-          printf("%-d\t%-25s\n", numBlocks, path);
-        }
-      }
-}
-
-int listThings(char* directory_path, int *depth, flags *dflags)
+int listThings(char* directory_path, int depth, flags *dflags)
 {
     DIR *dir;
     struct dirent *dentry;
     struct stat stat_entry;
+    int size=0;
+    int RecSubdirSize=0;
 
     if ((dir = opendir(dflags->dir)) == NULL){
       perror(dflags->dir);
-      return 1;
+      return -1;
     }
     chdir(dflags->dir); //change to directory we are analysing
-    
+
     while ((dentry = readdir(dir)) != NULL) {
       if (dflags->dereference)
         stat(dentry->d_name, &stat_entry);
@@ -51,43 +26,69 @@ int listThings(char* directory_path, int *depth, flags *dflags)
       strcat(new_path,dentry->d_name);
             
         // Ficheiros Regulares
-        if (S_ISREG(stat_entry.st_mode)) {
-            
-            if (dflags->maxDepthValue>depth){
-              list_reg_files(1,&dflags,new_path,stat_entry);
+        if (S_ISREG(stat_entry.st_mode) || S_ISLNK(stat_entry.st_mode)) { //we want to list regular files and symbolic links in the same way
+            if (dflags->bytes) {
+              size+=stat_entry.st_size;
+            }
+            else {
+              size += stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+            }
+
+            if (dflags->maxDepthValue> depth && dflags->all){ //printing files only if we're under maxDepth value
+              if (dflags->bytes) {
+                  printf("%-ld\t%-25s\n", stat_entry.st_size, new_path);
+                }
+
+              else {
+                int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+                printf("%-d\t%-25s\n", numBlocks, new_path);
+              }
             }
         }
         // Diretorios
         else if (S_ISDIR(stat_entry.st_mode)) {
             dflags->dir=dentry->d_name; //update flag with path of directory we will analyse
-
             if ((strcmp(dentry->d_name, ".") == 0 || strcmp(dentry->d_name, "..") == 0)) //avoid infinite recursion
                 continue;                                                                //we just want to make recursive calls to the directories inside "." not the direcotry itself
               int pid;
-              pid= fork();  //saves child pids in array to wait for them later
-              printf("here\n");
+              int pd[2];
+              pipe(pd);
+              pid= regFork(dflags);
+
               if (pid==0){ //child process
-                *depth+=1;
-                printf("hereeeeeee\n");
-                listThings(new_path,depth,dflags); //new process treats subdirectory making a recursive call
-            
+                int subdirSize=0;
+                subdirSize+= listThings(new_path,depth+1,dflags); //new process treats subdirectory making a recursive call
+                
+                close(pd[0]);
+                write(pd[1],&subdirSize,sizeof(long int));
                 regExit(0);
 
               }else if (pid<0){ //error on fork()
                 printf("Error making fork\n");
-                return 1;
+                return -1;
               }
               else{ //parent process
-              int status;
-                waitpid(pid,&status,0);
-              }
+                waitpid(pid,NULL,0);
+                
+                close(pd[1]);
+                read(pd[0],&RecSubdirSize,sizeof(long int));
 
-            if (dflags->maxDepthValue>=depth){
-              list_reg_files(1,&dflags,new_path,stat_entry);
-            }
+                if(dflags->bytes) RecSubdirSize+=4096;
+                if(dflags->blockSize) RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+                if (!dflags->separateDirs) size+=RecSubdirSize;
+
+                if (dflags->maxDepthValue> depth) //printing subdirectories only if under maxDepthValue
+                  printf("%-d\t%-25s\n", RecSubdirSize, new_path);
+              }
         }
     }
+    if(depth==0){ //printing requested directory
+        if(dflags->bytes) size+=4096;
+        if(dflags->blockSize) size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+        printf("%-d\t%-25s\n", size, directory_path);
+    }
+
     chdir("..");//go back to previous directory to continue listing things in there
     closedir(dir);
-    return 0;
+    return size;
 }

@@ -12,9 +12,7 @@ int main(int argc, char const *argv[], char *envp[])
   }
   printFlags(&duflags);
 
-  chdir(duflags.dir);
-
-  if(listThings(".",0, &duflags)){
+  if(listThings(duflags.dir,0, &duflags)<0){
     printf("Error listing\n");
     regExit(1);
   }

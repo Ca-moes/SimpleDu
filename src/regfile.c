@@ -77,32 +77,22 @@ void regReceiveSignal(int signal){ //handler dos sinais
     fprintf(fp, "%.2f - %.8d - RECV_SIGNAL - %d\n", getTimefromBeggining(action_time), getpid(),signal);
 }
 
-int regSendMessage(int fd, void *buf, size_t n){
+int regSendMessage(int fd, long int size, size_t n){
     struct timespec action_time;
     clock_gettime(CLOCK_MONOTONIC, &action_time);
 
-    fprintf(fp, "%.2f - %.8d - SEND_PIPE -", getTimefromBeggining(action_time), getpid());
+    fprintf(fp, "%.2f - %.8d - SEND_PIPE - %ld", getTimefromBeggining(action_time), getpid(),size);
 
-    for(int i=0;i<n;i++){ //print bytes of the message for now
-        fprintf(fp, " %"PRIu8, ((uint8_t *)buf)[i]);
-    }
-    fprintf(fp, "\n");
-
-    return write(fd,buf,n);
+    return write(fd,&size,n);
 }
 
-int regReceiveMessage(int fd, void *buf, size_t n){
+int regReceiveMessage(int fd, long int size, size_t n){
     struct timespec action_time;
     clock_gettime(CLOCK_MONOTONIC, &action_time);
     
-    fprintf(fp, "%.2f - %.8d - RECV_PIPE -", getTimefromBeggining(action_time), getpid());
+    fprintf(fp, "%.2f - %.8d - RECV_PIPE - %ld", getTimefromBeggining(action_time), getpid(), size);
 
-    for(int i=0;i<n;i++){ //print bytes of the message for now
-        fprintf(fp, " %"PRIu8, ((uint8_t *)buf)[i]);
-    }
-    fprintf(fp, "\n");
-
-    return read(fd,buf,n);
+    return read(fd,&size,n);
 }
 
 double getTimefromBeggining(struct timespec action_time){

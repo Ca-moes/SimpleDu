@@ -49,12 +49,12 @@ int regSendSignal(pid_t dpid,int signo);
 /*
 function to send a message using pipe and log it in the file
 */
-int regSendMessage(int fd, void *buf, size_t n);
+int regSendMessage(int fd, long int size, size_t n);
 
 /*
 function to receive a message using pipe and log it in the file
 */
-int regReceiveMessage(int fd, void *buf, size_t n);
+int regReceiveMessage(int fd, long int size, size_t n);
 
 double getTimefromBeggining(struct timespec action_time);
 
