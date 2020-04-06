@@ -49,7 +49,7 @@ int list_reg_files(flags *flags,Data *info) {
     int numBlocks = fileSize / flags->blockSizeValue;
     printf("%-d\t%-25s\n", numBlocks, ".");
   }
-  
+
   return 0; 
 }
 
@@ -130,7 +130,6 @@ int listThings(char* directory_path, Data *data, flags *dflags)
                 
                 read(pd[0], data->objects, sizeof(Object)*(index)); //replace parent array with the child array updated
                 data->index=index; //updating parent index
-                data->all_size+=data->objects[data->index].size;
               }
             if (data->index == data->max_size) { //checking again if we can insert another object on array
               data->objects = realloc(data->objects, 2 * data->max_size * sizeof(Object));
@@ -140,6 +139,7 @@ int listThings(char* directory_path, Data *data, flags *dflags)
             data->objects[data->index].stat_entry=stat_entry;
             data->objects[data->index].dir=true;
             data->objects[data->index].size=data->objects[data->index].stat_entry.st_size;
+            data->all_size+=data->objects[data->index].size;
             data->index+=1; //updates index
         }
     }
