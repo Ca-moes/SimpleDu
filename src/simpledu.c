@@ -18,6 +18,7 @@ int main(int argc, char const *argv[], char *envp[])
   info.objects= malloc(sizeof(Object)*32); //allocating memory for 32 objects
   info.index=0;
   info.max_size=32; //this value may be incremented if needed
+  info.all_size=0;
 
   if(listThings(".",&info, &duflags)){
     printf("Error listing\n");
