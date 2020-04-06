@@ -47,9 +47,14 @@ int setFlags(flags *flags, int argc, char const *argv[]){
 
 int fillFlagsStruct(flags *flags, int argc, char const *argv[])
 {
+  int Bflag=0;
   for (unsigned int i = 1; i < argc; i++)
   {  
-    if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0)
+    if(Bflag == 1){
+      flags->blockSizeValue = atoi(argv[i]);
+      Bflag = 0;
+    }
+    else if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0)
     {
       if (flags->all == 1) return 1;
       else flags->all = 1;
@@ -74,7 +79,11 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       if (flags->separateDirs == 1) return 1;
       else flags->separateDirs = 1;
     } 
-    else if (strcmp(argv[i], "-B") == 0 || strstr(argv[i],"--block-size=") != NULL)
+    else if (strcmp(argv[i], "-B") == 0){
+      Bflag = 1;
+      continue;
+    } 
+    else if (strstr(argv[i],"--block-size=") != NULL)
     {
       if (flags->blockSize == 1) return 1;
       else {
