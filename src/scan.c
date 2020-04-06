@@ -9,7 +9,7 @@ void list_reg_files(flags *dflags,char *path, struct stat stat_entry){
     int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
     printf("%-d\t%-25s\n", numBlocks, path);
   }
-  return 0;
+  return;
 }
 
 
@@ -64,9 +64,14 @@ int listThings(char* directory_path, int depth, flags *dflags)
 
               if (pid==0){ //child process
                 regNewProcess(dflags);
-                long int subdirSize=0;
-                subdirSize+= listThings(new_path,depth+1,dflags); //new process treats subdirectory making a recursive call
+                long int subdirSize;
+                subdirSize = listThings(new_path,depth+1,dflags); //new process treats subdirectory making a recursive call
                                                                   //returns size of whats inside directory
+                
+                if(dflags->bytes) subdirSize+=4096; //default size of a folder occupies 4096 bytes
+                if(dflags->blockSize) subdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
+                regEntry(subdirSize, new_path);
+
                 close(pd[0]);
                 regSendMessage(pd[1],&subdirSize,sizeof(long int));
                 regExit(0);
@@ -80,13 +85,8 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 
                 close(pd[1]);
                 regReceiveMessage(pd[0],&RecSubdirSize,sizeof(long int));
-
-                if(dflags->bytes) RecSubdirSize+=4096; //an empty folder occupies 4096 bytes
-                if(dflags->blockSize) RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
-                regEntry(RecSubdirSize, new_path);
-
                 if (dflags->maxDepthValue> depth) //printing subdirectories only if under maxDepthValue
                   printf("%-ld\t%-25s\n", RecSubdirSize, new_path);
               }
