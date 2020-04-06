@@ -9,7 +9,7 @@ void list_reg_files(flags *dflags,char *path, struct stat stat_entry){
     int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
     printf("%-d\t%-25s\n", numBlocks, path);
   }
-  return 0;
+  return;
 }
 
 
