@@ -27,9 +27,10 @@ void regCommand(int argc,char const *argv[]){
             strcat(command," ");
 	}
     fprintf(fp, "%.2f - %.8d - CREATE - %s\n", getTimefromBeggining(action_time), getpid(), command);
+    fflush(fp);
 }
 
-pid_t regFork(flags *flags){
+void regNewProcess(flags *flags){
     struct timespec action_time;
     clock_gettime(CLOCK_MONOTONIC, &action_time);
 
@@ -49,8 +50,6 @@ pid_t regFork(flags *flags){
     
     fprintf(fp, "%.2f - %.8d - CREATE - %s\n", getTimefromBeggining(action_time), getpid(),outflags);
     fflush(fp);
-
-    return fork();
 }
 
 void regExit(int status){
@@ -58,6 +57,7 @@ void regExit(int status){
     clock_gettime(CLOCK_MONOTONIC, &action_time);
 
     fprintf(fp, "%.2f - %.8d - EXIT - %d\n", getTimefromBeggining(action_time), getpid(),status);
+    fflush(fp);
     exit(status);
 }
 
@@ -66,7 +66,7 @@ int regSendSignal(pid_t dpid, int signo){
     clock_gettime(CLOCK_MONOTONIC, &action_time);
 
     fprintf(fp, "%.2f - %.8d - SEND_SIGNAL - %d to process: %d\n", getTimefromBeggining(action_time), getpid(),signo, dpid);
-    
+    fflush(fp);
     return kill(dpid,signo);
 }
 
@@ -75,34 +75,32 @@ void regReceiveSignal(int signal){ //handler dos sinais
     clock_gettime(CLOCK_MONOTONIC, &action_time);
 
     fprintf(fp, "%.2f - %.8d - RECV_SIGNAL - %d\n", getTimefromBeggining(action_time), getpid(),signal);
+    fflush(fp);
 }
 
-int regSendMessage(int fd, void *buf, size_t n){
+void regSendMessage(int fd, long int *size, size_t n){
     struct timespec action_time;
     clock_gettime(CLOCK_MONOTONIC, &action_time);
-
-    fprintf(fp, "%.2f - %.8d - SEND_PIPE -", getTimefromBeggining(action_time), getpid());
-
-    for(int i=0;i<n;i++){ //print bytes of the message for now
-        fprintf(fp, " %"PRIu8, ((uint8_t *)buf)[i]);
-    }
-    fprintf(fp, "\n");
-
-    return write(fd,buf,n);
+    write(fd,size,n);
+    fprintf(fp, "%.2f - %.8d - SEND_PIPE - %ld\n", getTimefromBeggining(action_time), getpid(),*size);
+    fflush(fp);
 }
 
-int regReceiveMessage(int fd, void *buf, size_t n){
+void regReceiveMessage(int fd, long int *size, size_t n){
+    struct timespec action_time;
+    clock_gettime(CLOCK_MONOTONIC, &action_time);
+    read(fd,size,n);
+    fprintf(fp, "%.2f - %.8d - RECV_PIPE - %ld\n", getTimefromBeggining(action_time), getpid(), *size); 
+    fflush(fp);
+}
+
+void regEntry(int size, char *path){
     struct timespec action_time;
     clock_gettime(CLOCK_MONOTONIC, &action_time);
     
-    fprintf(fp, "%.2f - %.8d - RECV_PIPE -", getTimefromBeggining(action_time), getpid());
-
-    for(int i=0;i<n;i++){ //print bytes of the message for now
-        fprintf(fp, " %"PRIu8, ((uint8_t *)buf)[i]);
-    }
-    fprintf(fp, "\n");
-
-    return read(fd,buf,n);
+    fprintf(fp, "%.2f - %.8d - ENTRY - size: %d\tpath: %s\n", getTimefromBeggining(action_time), getpid(), size, path); 
+    
+    fflush(fp);
 }
 
 double getTimefromBeggining(struct timespec action_time){

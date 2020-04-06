@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "regfile.h": "c",
+        "fcntl.h": "c",
+        "simpledu.h": "c"
+    }
+}
