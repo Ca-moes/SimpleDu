@@ -19,19 +19,11 @@ typedef struct object{
   bool dir;
 }Object;
 
-typedef struct data{
-    Object *objects; //array of objects
-    int index; //index aka number of objects
-    int max_size; //max_size of objects array -> updated if needed
-}Data;
-
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
-int list_reg_files(flags *flags,Data *info);
+void list_reg_files(int dir, flags *flags,char *path, struct stat stat_entry);
 
-int listThings(char* directory_path,Data *info, flags *dflags);
-
-int slashNumber(char *path);
+int listThings(char* directory_path, int *depth, flags *dflags);
 
 #endif /*SCAN_H*/
