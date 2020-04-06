@@ -20,4 +20,8 @@ void list_reg_files(flags *flags,char *path, struct stat stat_entry);
 
 int listThings(char* directory_path, int depth, flags *dflags);
 
+void SIGINT_handler(int signo);
+
+void SIGINT_subscriber();
+
 #endif /*SCAN_H*/
