@@ -67,8 +67,9 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 long int subdirSize=0;
                 subdirSize+= listThings(new_path,depth+1,dflags); //new process treats subdirectory making a recursive call
                                                                   //returns size of whats inside directory
-                close(pd[0]);
-                regSendMessage(pd[1],&subdirSize,sizeof(long int));
+                close(pd[READ]);
+                regSendMessage(pd[WRITE],&subdirSize,sizeof(long int));
+                close(pd[WRITE]);
                 regExit(0);
 
               }else if (pid<0){ //error on fork()
@@ -78,10 +79,11 @@ int listThings(char* directory_path, int depth, flags *dflags)
               else{ //parent process
                 waitpid(pid,NULL,0);
                 
-                close(pd[1]);
-                regReceiveMessage(pd[0],&RecSubdirSize,sizeof(long int));
+                close(pd[WRITE]);
+                regReceiveMessage(pd[READ],&RecSubdirSize,sizeof(long int));
+                close(pd[READ]);
 
-                if(dflags->bytes) RecSubdirSize+=4096; //an empty folder occupies 4096 bytes
+                if(dflags->bytes) RecSubdirSize+=stat_entry.st_size; //aparentemente isto varia n é smp o mesmo valor
                 if(dflags->blockSize) RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
@@ -93,7 +95,7 @@ int listThings(char* directory_path, int depth, flags *dflags)
         }
     }
     if(depth==0){ //printing requested directory
-        if(dflags->bytes) size+=4096;
+        if(dflags->bytes) size+=stat_entry.st_size;
         if(dflags->blockSize) size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
         printf("%-ld\t%-25s\n", size, directory_path);
     }

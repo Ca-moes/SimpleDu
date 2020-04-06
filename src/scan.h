@@ -13,6 +13,9 @@
 #include "flags.h"
 #include "regfile.h"
 
+#define WRITE 1
+#define READ  0
+
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
