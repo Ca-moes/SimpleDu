@@ -36,6 +36,8 @@ int setFlags(flags *flags, int argc, char const *argv[]){
     // ver página 1, ultimos pontos: "Por omissão, o comando du:"
     // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
     flags->blockSize = 1;
+    flags->dir = malloc( sizeof(argv[1]));
+    strcpy(flags->dir, argv[1]);
   }
   else{
     if (fillFlagsStruct(flags, argc, argv) != 0){
