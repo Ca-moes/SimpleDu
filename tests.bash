@@ -47,8 +47,6 @@ if [ $? -eq 0 ] ; then
   (./simpledu ../TestDir -l -a -L || echo $?) | sort -k2 > testeT_simpledu8.txt
   (du ../TestDir -l -a -L || echo $?) | sort -k2 > testeT_du8.txt
   diff -q testeT_simpledu8.txt testeT_du8.txt > /dev/null 2>&1 && echo OK || echo FAILED
-
-
   make clean
 else
   echo "COMPILATION ERROR";

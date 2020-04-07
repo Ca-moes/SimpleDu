@@ -11,7 +11,7 @@ int main(int argc, char const *argv[], char *envp[])
     printf("Flag Error\n");
     regExit(1);
   }
-  //printFlags(&duflags);
+  printFlags(&duflags);
 
   if(listThings(duflags.dir,0, &duflags)<0){
     printf("Error listing\n");

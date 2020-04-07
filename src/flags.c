@@ -18,7 +18,7 @@ void initFlags(flags *flags, char *envp[]){
   
   flags->all = 0;
   flags->bytes = 0;
-  flags->blockSize = 0; //default size not changed
+  flags->blockSize = 0; //-B default size not changed
   flags->blockSizeValue = 1024; //default size
   flags->countLinks = 0;
   flags->dereference = 0;
@@ -82,8 +82,11 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       else flags->separateDirs = 1;
     } 
     else if (strcmp(argv[i], "-B") == 0){
+      if (flags->blockSize == 1) return 1;
+      else{ 
+        flags->blockSize = 1;
       Bflag = 1;
-      continue;
+      continue;}
     } 
     else if (strstr(argv[i],"--block-size=") != NULL)
     {
@@ -125,16 +128,16 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
 }
 
 void printFlags(flags *flags){
-  printf("Current Dir : %s\n", flags->dir);
-  printf("-a OR --all : %d\n", flags->all);
-  printf("-b OR --bytes : %d\n", flags->bytes);
-  printf("-B OR --block-size=SIZE : %d\n", flags->blockSize);
-  printf("SIZE : %d\n", flags->blockSizeValue);
-  printf("-l OR --count-links : %d\n", flags->countLinks);
-  printf("-L OR --dereference  : %d\n", flags->dereference);
-  printf("-S OR --separate-dirs : %d\n", flags->separateDirs);
-  printf("--max-depth=N : %d\n", flags->maxDepth);
-  printf("N : %d\n", flags->maxDepthValue);
+  printf("Current Dir : %s\n", flags->dir); fflush(stdout);
+  printf("-a OR --all : %d\n", flags->all); fflush(stdout);
+  printf("-b OR --bytes : %d\n", flags->bytes); fflush(stdout);
+  printf("-B OR --block-size=SIZE : %d\n", flags->blockSize); fflush(stdout);
+  printf("SIZE : %d\n", flags->blockSizeValue); fflush(stdout);
+  printf("-l OR --count-links : %d\n", flags->countLinks); fflush(stdout);
+  printf("-L OR --dereference  : %d\n", flags->dereference); fflush(stdout);
+  printf("-S OR --separate-dirs : %d\n", flags->separateDirs); fflush(stdout);
+  printf("--max-depth=N : %d\n", flags->maxDepth); fflush(stdout);
+  printf("N : %d\n", flags->maxDepthValue); fflush(stdout);
 
   // Enviroment Variables print
   
