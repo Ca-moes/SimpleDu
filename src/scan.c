@@ -84,9 +84,9 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 close(pd[WRITE]);
                 regReceiveMessage(pd[READ],&RecSubdirSize,sizeof(long int));
                 close(pd[READ]);
-
+                
                 if(dflags->bytes) RecSubdirSize+=stat_entry.st_size; //aparentemente isto varia n é smp o mesmo valor
-                if(dflags->blockSize) RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
+                else RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
                 regEntry(RecSubdirSize, new_path);
@@ -100,7 +100,7 @@ int listThings(char* directory_path, int depth, flags *dflags)
     }
     if(depth==0){ //printing requested directory
         if(dflags->bytes) size+=stat_entry.st_size;
-        if(dflags->blockSize) size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+        else size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
         printf("%-ld\t%s\n", size, directory_path);
     }
 
