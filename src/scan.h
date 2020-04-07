@@ -13,11 +13,18 @@
 #include "flags.h"
 #include "regfile.h"
 
+#define WRITE 1
+#define READ  0
+
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
 void list_reg_files(flags *flags,char *path, struct stat stat_entry);
 
 int listThings(char* directory_path, int depth, flags *dflags);
+
+void SIGINT_handler(int signo);
+
+void SIGINT_subscriber();
 
 #endif /*SCAN_H*/

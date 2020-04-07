@@ -2,12 +2,14 @@
 
 void list_reg_files(flags *dflags,char *path, struct stat stat_entry){
   if (dflags->bytes) {
-      printf("%-ld\t%-25s\n", stat_entry.st_size, path);
+    printf("%-ld\t%s\n", stat_entry.st_size, path);
+    fflush(stdout);
   }
 
   else {
     int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-    printf("%-d\t%-25s\n", numBlocks, path);
+    printf("%-d\t%s\n", numBlocks, path);
+    fflush(stdout);
   }
   return;
 }
@@ -67,8 +69,9 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 long int subdirSize=0;
                 subdirSize+= listThings(new_path,depth+1,dflags); //new process treats subdirectory making a recursive call
                                                                   //returns size of whats inside directory
-                close(pd[0]);
-                regSendMessage(pd[1],&subdirSize,sizeof(long int));
+                close(pd[READ]);
+                regSendMessage(pd[WRITE],&subdirSize,sizeof(long int));
+                close(pd[WRITE]);
                 regExit(0);
 
               }else if (pid<0){ //error on fork()
@@ -78,27 +81,59 @@ int listThings(char* directory_path, int depth, flags *dflags)
               else{ //parent process
                 waitpid(pid,NULL,0);
                 
-                close(pd[1]);
-                regReceiveMessage(pd[0],&RecSubdirSize,sizeof(long int));
-
-                if(dflags->bytes) RecSubdirSize+=4096; //an empty folder occupies 4096 bytes
-                if(dflags->blockSize) RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
+                close(pd[WRITE]);
+                regReceiveMessage(pd[READ],&RecSubdirSize,sizeof(long int));
+                close(pd[READ]);
+                
+                if(dflags->bytes) RecSubdirSize+=stat_entry.st_size; //aparentemente isto varia n é smp o mesmo valor
+                else RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
                 regEntry(RecSubdirSize, new_path);
 
-                if (dflags->maxDepthValue> depth) //printing subdirectories only if under maxDepthValue
-                  printf("%-ld\t%-25s\n", RecSubdirSize, new_path);
+                if (dflags->maxDepthValue> depth){ //printing subdirectories only if under maxDepthValue
+                  printf("%-ld\t%s\n", RecSubdirSize, new_path);
+                  fflush(stdout);
+                }
               }
         }
     }
     if(depth==0){ //printing requested directory
-        if(dflags->bytes) size+=4096;
-        if(dflags->blockSize) size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-        printf("%-ld\t%-25s\n", size, directory_path);
+        if(dflags->bytes) size+=stat_entry.st_size;
+        else size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+        printf("%-ld\t%s\n", size, directory_path);
     }
 
     chdir("..");//go back to previous directory to continue listing things in there
     closedir(dir);
     return size;
+}
+
+void SIGINT_handler(int signo) {
+  char quit;
+  regSendSignal(getppid(), SIGSTOP);
+
+  while (1) {
+    printf("Are you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
+    scanf("%s", &quit);
+
+    if (quit == 'N' || quit == 'n') {
+      regSendSignal(getppid(), SIGCONT);
+      return;
+    }
+    else if (quit == 'Y' || quit == 'y') {
+      regSendSignal(getppid(), SIGQUIT);
+      regSendSignal(getpid(), SIGQUIT);
+      return;
+    }
+    else continue;
+  }
+}
+
+void SIGINT_subscriber() {
+  struct sigaction action;
+  action.sa_handler = SIGINT_handler;
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  sigaction(SIGINT, &action, NULL);
 }
