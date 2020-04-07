@@ -119,7 +119,7 @@ void SIGINT_handler(int signo) {
   regSendSignal(getppid(), SIGSTOP);
 
   while (1) {
-    printf("Are you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
+    printf("\nAre you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
     scanf("%s", &quit);
 
     if (quit == 'N' || quit == 'n') {
@@ -144,6 +144,8 @@ void SIGINT_subscriber() {
 }
 
 void old_SIGINT_subscriber() {
+  oldaction.sa_handler = SIG_IGN;
+  oldaction.sa_flags = 0;
   sigemptyset(&oldaction.sa_mask);
   sigaction(SIGINT, &oldaction, NULL);
 }
