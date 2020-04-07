@@ -18,9 +18,9 @@ void initFlags(flags *flags, char *envp[]){
   
   flags->all = 0;
   flags->bytes = 0;
-  flags->blockSize = 0; //default size not changed
+  flags->blockSize = 0;
   flags->blockSizeValue = 1024; //default size
-  flags->countLinks = 0;
+  flags->countLinks = 1;
   flags->dereference = 0;
   flags->separateDirs = 0;
   flags->maxDepth = 0;
@@ -35,7 +35,6 @@ int setFlags(flags *flags, int argc, char const *argv[]){
   else if (argc == 2){
     // ver página 1, ultimos pontos: "Por omissão, o comando du:"
     // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
-    flags->blockSize = 1;
     flags->dir = malloc( sizeof(argv[1]));
     strcpy(flags->dir, argv[1]);
   }
@@ -68,8 +67,7 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
     } 
     else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--count-links") == 0)
     {
-      if (flags->countLinks == 1) return 1;
-      else flags->countLinks = 1;
+      continue; // always on
     } 
     else if (strcmp(argv[i], "-L") == 0 || strcmp(argv[i], "--dereference") == 0)
     {
