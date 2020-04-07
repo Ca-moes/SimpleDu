@@ -20,7 +20,7 @@ void initFlags(flags *flags, char *envp[]){
   flags->bytes = 0;
   flags->blockSize = 0;
   flags->blockSizeValue = 1024; //default size
-  flags->countLinks = 1;
+  flags->countLinks = 0;
   flags->dereference = 0;
   flags->separateDirs = 0;
   flags->maxDepth = 0;
@@ -67,7 +67,8 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
     } 
     else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--count-links") == 0)
     {
-      continue; // always on
+      if (flags->countLinks == 1) return 1;	      
+      else flags->countLinks = 1;
     } 
     else if (strcmp(argv[i], "-L") == 0 || strcmp(argv[i], "--dereference") == 0)
     {
