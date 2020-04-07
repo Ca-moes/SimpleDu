@@ -7,10 +7,8 @@ int main(int argc, char const *argv[], char *envp[])
   regCommand(argc,argv);
 
   if (setFlags(&duflags, argc, argv))
-  {
-    printf("Flag Error\n");
     regExit(1);
-  }
+    
   //printFlags(&duflags);
 
   if(listThings(duflags.dir,0, &duflags)<0){
