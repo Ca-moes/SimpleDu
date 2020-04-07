@@ -16,6 +16,7 @@
 #define WRITE 1
 #define READ  0
 
+struct sigaction oldaction;
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
@@ -26,5 +27,7 @@ int listThings(char* directory_path, int depth, flags *dflags);
 void SIGINT_handler(int signo);
 
 void SIGINT_subscriber();
+
+void old_SIGINT_subscriber();
 
 #endif /*SCAN_H*/

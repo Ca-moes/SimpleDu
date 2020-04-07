@@ -62,6 +62,11 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 continue;                                                                //we just want to make recursive calls to the directories inside "." not the direcotry itself
               int pid, pd[2];
               pipe(pd);
+              if (depth == 0)
+                SIGINT_subscriber();
+              else
+                old_SIGINT_subscriber();
+                
               pid= fork();
 
               if (pid==0){ //child process
@@ -135,5 +140,10 @@ void SIGINT_subscriber() {
   action.sa_handler = SIGINT_handler;
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
-  sigaction(SIGINT, &action, NULL);
+  sigaction(SIGINT, &action, &oldaction);
+}
+
+void old_SIGINT_subscriber() {
+  sigemptyset(&oldaction.sa_mask);
+  sigaction(SIGINT, &oldaction, NULL);
 }

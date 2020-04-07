@@ -2,13 +2,12 @@
 
 int main(int argc, char const *argv[], char *envp[])
 {
-  SIGINT_subscriber();
   flags duflags; initRegister(); initFlags(&duflags, envp);
   regCommand(argc,argv);
 
   if (setFlags(&duflags, argc, argv))
     regExit(1);
-    
+
   //printFlags(&duflags);
 
   if(listThings(duflags.dir,0, &duflags)<0){
