@@ -2,12 +2,14 @@
 
 void list_reg_files(flags *dflags,char *path, struct stat stat_entry){
   if (dflags->bytes) {
-      printf("%-ld\t%-25s\n", stat_entry.st_size, path);
+    printf("%-ld\t%s\n", stat_entry.st_size, path);
+    fflush(stdout);
   }
 
   else {
     int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-    printf("%-d\t%-25s\n", numBlocks, path);
+    printf("%-d\t%s\n", numBlocks, path);
+    fflush(stdout);
   }
   return;
 }
@@ -89,15 +91,17 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 
                 regEntry(RecSubdirSize, new_path);
 
-                if (dflags->maxDepthValue> depth) //printing subdirectories only if under maxDepthValue
-                  printf("%-ld\t%-25s\n", RecSubdirSize, new_path);
+                if (dflags->maxDepthValue> depth){ //printing subdirectories only if under maxDepthValue
+                  printf("%-ld\t%s\n", RecSubdirSize, new_path);
+                  fflush(stdout);
+                }
               }
         }
     }
     if(depth==0){ //printing requested directory
         if(dflags->bytes) size+=stat_entry.st_size;
         if(dflags->blockSize) size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-        printf("%-ld\t%-25s\n", size, directory_path);
+        printf("%-ld\t%s\n", size, directory_path);
     }
 
     chdir("..");//go back to previous directory to continue listing things in there
