@@ -40,6 +40,7 @@ int setFlags(flags *flags, int argc, char const *argv[]){
   }
   else{
     if (fillFlagsStruct(flags, argc, argv) != 0){
+      printf("Flag Error\n");
       return 1;
     }
   }
@@ -56,65 +57,41 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
       Bflag = 0;
     }
     else if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0)
-    {
-      if (flags->all == 1) return 1;
-      else flags->all = 1;
-    } 
+      flags->all = 1;
     else if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--bytes") == 0)
-    {
-      if (flags->bytes == 1) return 1;
-      else flags->bytes = 1;
-    } 
+      flags->bytes = 1;
     else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--count-links") == 0)
-    {
-      if (flags->countLinks == 1) return 1;	      
-      else flags->countLinks = 1;
-    } 
+      flags->countLinks = 1;
     else if (strcmp(argv[i], "-L") == 0 || strcmp(argv[i], "--dereference") == 0)
-    {
-      if (flags->dereference == 1) return 1;
-      else flags->dereference = 1;
-    } 
+      flags->dereference = 1;
     else if (strcmp(argv[i], "-S") == 0 || strcmp(argv[i], "--separate-dirs") == 0)
-    {
-      if (flags->separateDirs == 1) return 1;
-      else flags->separateDirs = 1;
-    } 
+      flags->separateDirs = 1;
     else if (strcmp(argv[i], "-B") == 0){
-      if (flags->blockSize == 1) return 1;
-      else{ 
-        flags->blockSize = 1;
+      flags->blockSize = 1;
       Bflag = 1;
-      continue;}
     } 
     else if (strstr(argv[i],"--block-size=") != NULL)
     {
-      if (flags->blockSize == 1) return 1;
-      else {
-        flags->blockSize = 1;
-        // pôr valor de SIZE em flags->blockSizeValue
-        char tmp[18];
-        strcpy(tmp, argv[i]);
-        char *start = &tmp[13];
-        char *end = &tmp[strlen(tmp)];
-        char *substr = (char *)calloc(1, end - start + 1);
-        memcpy(substr, start, end - start);
-        flags->blockSizeValue = atoi(substr);
-      }
+      flags->blockSize = 1;
+      // pôr valor de SIZE em flags->blockSizeValue
+      char tmp[18];
+      strcpy(tmp, argv[i]);
+      char *start = &tmp[13];
+      char *end = &tmp[strlen(tmp)];
+      char *substr = (char *)calloc(1, end - start + 1);
+      memcpy(substr, start, end - start);
+      flags->blockSizeValue = atoi(substr);
     }
     else if (strstr(argv[i],"--max-depth=") != NULL)
     {
-      if (flags->maxDepth == 1) return 1;
-      else {
-        flags->maxDepth = 1;
-        char tmp[18];
-        strcpy(tmp, argv[i]);
-        char *start = &tmp[12];
-        char *end = &tmp[strlen(tmp)];
-        char *substr = (char *)calloc(1, end - start + 1);
-        memcpy(substr, start, end - start);
-        flags->maxDepthValue = atoi(substr);
-      }
+      flags->maxDepth = 1;
+      char tmp[18];
+      strcpy(tmp, argv[i]);
+      char *start = &tmp[12];
+      char *end = &tmp[strlen(tmp)];
+      char *substr = (char *)calloc(1, end - start + 1);
+      memcpy(substr, start, end - start);
+      flags->maxDepthValue = atoi(substr);
     }
     else if (argv[i][0] != '-'){
       if(flags->dir != NULL)

@@ -16,6 +16,11 @@
 #define WRITE 1
 #define READ  0
 
+struct sigaction oldaction;
+// https://stackoverflow.com/questions/49184889/can-a-parent-send-signal-to-all-child-processes-in-the-same-exact-time
+pid_t pgchldid;
+int boole;
+
 /* Read files in flags->dir
   Returns 0 OK; 1 otherwise
 */
@@ -26,5 +31,7 @@ int listThings(char* directory_path, int depth, flags *dflags);
 void SIGINT_handler(int signo);
 
 void SIGINT_subscriber();
+
+void no_SIGINT_handler();
 
 #endif /*SCAN_H*/

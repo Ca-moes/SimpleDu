@@ -62,7 +62,13 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 continue;                                                                //we just want to make recursive calls to the directories inside "." not the direcotry itself
               int pid, pd[2];
               pipe(pd);
-              pid= fork();
+              if (depth == 0)
+                SIGINT_subscriber();
+              else
+                no_SIGINT_handler();
+                
+              pid = fork();
+
 
               if (pid==0){ //child process
                 regNewProcess(dflags);
@@ -79,6 +85,13 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 return -1;
               }
               else{ //parent process
+                if (boole == 0)
+                {
+                  pgchldid = pid;
+                  boole = 1;
+                }
+                setpgid(pid, pgchldid);
+
                 waitpid(pid,NULL,0);
                 
                 close(pd[WRITE]);
@@ -111,17 +124,17 @@ int listThings(char* directory_path, int depth, flags *dflags)
 
 void SIGINT_handler(int signo) {
   char quit;
-  regSendSignal(getppid(), SIGSTOP);
-
+  regSendSignal(-pgchldid, SIGSTOP);
   while (1) {
-    printf("Are you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
+    sleep(2);
+    printf("\nAre you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
     scanf("%s", &quit);
-
     if (quit == 'N' || quit == 'n') {
-      regSendSignal(getppid(), SIGCONT);
+      regSendSignal(-pgchldid, SIGCONT);
       return;
     }
     else if (quit == 'Y' || quit == 'y') {
+      regSendSignal(-pgchldid, SIGQUIT);
       regSendSignal(getppid(), SIGQUIT);
       regSendSignal(getpid(), SIGQUIT);
       return;
@@ -135,5 +148,12 @@ void SIGINT_subscriber() {
   action.sa_handler = SIGINT_handler;
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
-  sigaction(SIGINT, &action, NULL);
+  sigaction(SIGINT, &action, &oldaction);
+}
+
+void no_SIGINT_handler() {
+  oldaction.sa_handler = SIG_IGN;
+  oldaction.sa_flags = 0;
+  sigemptyset(&oldaction.sa_mask);
+  sigaction(SIGINT, &oldaction, NULL);
 }
