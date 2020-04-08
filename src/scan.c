@@ -126,6 +126,7 @@ void SIGINT_handler(int signo) {
   char quit;
   regSendSignal(-pgchldid, SIGSTOP);
   while (1) {
+    sleep(2);
     printf("\nAre you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
     scanf("%s", &quit);
     if (quit == 'N' || quit == 'n') {
