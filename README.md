@@ -3,7 +3,8 @@
 
 Uso: ./simpledu dir flag1 flag2
 
-[//]: # (https://www.tablesgenerator.com/markdown_tables#)
+[comment]: <> (www.tablesgeneratormarkdown_tables#)
+
 | Flag          | Alternativa       | Descrição                                                                        |
 |---------------|-------------------|----------------------------------------------------------------------------------|
 | -a            | --all             | - mostra também files                                                            |
