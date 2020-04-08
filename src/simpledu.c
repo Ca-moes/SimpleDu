@@ -10,6 +10,7 @@ int main(int argc, char const *argv[], char *envp[])
 
   //printFlags(&duflags);
 
+  boole = 0;
   if(listThings(duflags.dir,0, &duflags)<0){
     printf("Error listing\n");
     regExit(1);

@@ -65,9 +65,10 @@ int listThings(char* directory_path, int depth, flags *dflags)
               if (depth == 0)
                 SIGINT_subscriber();
               else
-                old_SIGINT_subscriber();
+                no_SIGINT_handler();
                 
-              pid= fork();
+              pid = fork();
+
 
               if (pid==0){ //child process
                 regNewProcess(dflags);
@@ -84,6 +85,13 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 return -1;
               }
               else{ //parent process
+                if (boole == 0)
+                {
+                  pgchldid = pid;
+                  boole = 1;
+                }
+                setpgid(pid, pgchldid);
+
                 waitpid(pid,NULL,0);
                 
                 close(pd[WRITE]);
@@ -116,17 +124,16 @@ int listThings(char* directory_path, int depth, flags *dflags)
 
 void SIGINT_handler(int signo) {
   char quit;
-  regSendSignal(getppid(), SIGSTOP);
-
+  regSendSignal(-pgchldid, SIGSTOP);
   while (1) {
     printf("\nAre you sure you want to quit?\nY: Yes, I want to quit\nN: No, I want to continue\n");
     scanf("%s", &quit);
-
     if (quit == 'N' || quit == 'n') {
-      regSendSignal(getppid(), SIGCONT);
+      regSendSignal(-pgchldid, SIGCONT);
       return;
     }
     else if (quit == 'Y' || quit == 'y') {
+      regSendSignal(-pgchldid, SIGQUIT);
       regSendSignal(getppid(), SIGQUIT);
       regSendSignal(getpid(), SIGQUIT);
       return;
@@ -143,7 +150,7 @@ void SIGINT_subscriber() {
   sigaction(SIGINT, &action, &oldaction);
 }
 
-void old_SIGINT_subscriber() {
+void no_SIGINT_handler() {
   oldaction.sa_handler = SIG_IGN;
   oldaction.sa_flags = 0;
   sigemptyset(&oldaction.sa_mask);
