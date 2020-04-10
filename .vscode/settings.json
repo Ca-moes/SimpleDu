@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "regfile.h": "c",
-        "fcntl.h": "c",
-        "simpledu.h": "c"
-    },
-    "C_Cpp.errorSquiggles": "Disabled"
-}
