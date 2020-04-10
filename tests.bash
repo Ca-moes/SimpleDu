@@ -62,6 +62,16 @@ if [ $? -eq 0 ] ; then
   (./simpledu ../TestDir -l -a -B 1000 || echo $?) | sort -k2 > testeT_simpledu11.txt
   (du ../TestDir -l -a -B 1000 || echo $?) | sort -k2 > testeT_du11.txt
   diff -q testeT_simpledu11.txt testeT_du11.txt > /dev/null 2>&1 && echo OK || echo FAILED
+  echo
+  echo "Test 12 [-l dir -a -B 1024 -b]:"
+  (./simpledu ../TestDir -l -a -B 1024 -b || echo $?) | sort -k2 > testeT_simpledu12.txt
+  (du ../TestDir -l -a -B 1024 -b || echo $?) | sort -k2 > testeT_du12.txt
+  diff -q testeT_simpledu12.txt testeT_du12.txt > /dev/null 2>&1 && echo OK || echo FAILED
+  echo
+  echo "Test 13 [-l dir -b -a -B 1024]:"
+  (./simpledu ../TestDir -l -b -a -B 1024 || echo $?) | sort -k2 > testeT_simpledu13.txt
+  (du ../TestDir -l -a -b -B 1024 || echo $?) | sort -k2 > testeT_du13.txt
+  diff -q testeT_simpledu13.txt testeT_du13.txt > /dev/null 2>&1 && echo OK || echo FAILED
   
   make clean
 else

@@ -69,9 +69,13 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
     else if (strcmp(argv[i], "-B") == 0){
       flags->blockSize = 1;
       Bflag = 1;
+      if (flags->bytes == 1)
+        flags->bytes = 0;
     } 
     else if (strstr(argv[i],"--block-size=") != NULL)
     {
+      if (flags->bytes == 1)
+        flags->bytes = 0;
       flags->blockSize = 1;
       // pôr valor de SIZE em flags->blockSizeValue
       char tmp[18];
