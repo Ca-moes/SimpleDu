@@ -32,4 +32,5 @@ Uso: ./simpledu dir flag1 flag2
 
 ### Details
  - Durante os testes, usando "~/" como dir, ao premir CTRL+C o programa demora um bocado a pausar todos os processos filhos (depende do computador) e com isso apresenta a mensagem indicativa de pausa e as opções disponiveis no meio da listagem do programa. Fazendo com que quando a listagem é pausada, o programa espera o input de "Y" ou "N" sem teto indicativo.
- - Fazendo CTRL+C , 'N' de input e CTRL+C outra vez, o programa não para 
+ - Fazendo CTRL+C , 'N' de input e CTRL+C outra vez, o programa não para.
+ - Em du: tendo -b -B SIZE, dará o output em block sizes e não em bytes. No simpledu, com as mesmas flags dará output em bytes. Isto é intencional para que o display de bytes seja sempre ativado (ou não) tendo em conta a presença da flag -b e não a ordem das flags -b e -B.

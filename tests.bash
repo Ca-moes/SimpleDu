@@ -58,7 +58,7 @@ if [ $? -eq 0 ] ; then
   (du ../TestDir -l -b -a -B 1000 || echo $?) | sort -k2 > testeT_du10.txt
   diff -q testeT_simpledu10.txt testeT_du10.txt > /dev/null 2>&1 && echo OK || echo FAILED
   echo
-  echo "Test 11 [-l dir -a -B 1000]:"
+  echo "Test 11 [-l dir -a -B 1000] (similar to TEST 6):"
   (./simpledu ../TestDir -l -a -B 1000 || echo $?) | sort -k2 > testeT_simpledu11.txt
   (du ../TestDir -l -a -B 1000 || echo $?) | sort -k2 > testeT_du11.txt
   diff -q testeT_simpledu11.txt testeT_du11.txt > /dev/null 2>&1 && echo OK || echo FAILED
