@@ -35,7 +35,7 @@ int setFlags(flags *flags, int argc, char const *argv[]){
   else if (argc == 2){
     // ver página 1, ultimos pontos: "Por omissão, o comando du:"
     // -B=1; tamanho = 1024; -a=0; -b=0; -l=0; -L=0; --max-depth=0
-    flags->dir = malloc( sizeof(argv[1]));
+    flags->dir = malloc( strlen(argv[1]));
     strcpy(flags->dir, argv[1]);
   }
   else{
@@ -96,7 +96,7 @@ int fillFlagsStruct(flags *flags, int argc, char const *argv[])
     else if (argv[i][0] != '-'){
       if(flags->dir != NULL)
         exit(1);
-      flags->dir = malloc( sizeof(argv[i]));
+      flags->dir = malloc( strlen(argv[i]));
       strcpy(flags->dir, argv[i]);
     }
   }
