@@ -9,6 +9,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <wait.h>
+#include <math.h>
 #include <stdbool.h>
 #include "flags.h"
 #include "regfile.h"

@@ -6,9 +6,8 @@ void list_reg_files(flags *dflags,char *path, struct stat stat_entry){
     fflush(stdout);
   }
 
-  else {
-    int numBlocks = stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-    printf("%-d\t%s\n", numBlocks, path);
+  else{
+    printf("%-ld\t%s\n", (long int) ceil((stat_entry.st_blocks/2)  / ((double)dflags->blockSizeValue/1024.0)), path);
     fflush(stdout);
   }
   return;
@@ -47,8 +46,8 @@ int listThings(char* directory_path, int depth, flags *dflags)
               regEntry(stat_entry.st_size, new_path);
             }
             else {
-              size += stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-              regEntry(stat_entry.st_blocks*512.0 / dflags->blockSizeValue, new_path);
+              size +=stat_entry.st_blocks/2;
+              regEntry(stat_entry.st_blocks*1024.0 / dflags->blockSizeValue, new_path);
             }
 
             if (dflags->maxDepthValue> depth && dflags->all){ //printing files only if we're under maxDepth value
@@ -99,22 +98,39 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 close(pd[READ]);
                 
                 if(dflags->bytes) RecSubdirSize+=stat_entry.st_size; //aparentemente isto varia n é smp o mesmo valor
-                else RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
+                else RecSubdirSize+=stat_entry.st_blocks/2; //one block corresponds to 512 bytes
+
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
                 regEntry(RecSubdirSize, new_path);
 
                 if (dflags->maxDepthValue> depth){ //printing subdirectories only if under maxDepthValue
-                  printf("%-ld\t%s\n", RecSubdirSize, new_path);
+                  if(dflags->bytes)
+                    printf("%-ld\t%s\n", RecSubdirSize, new_path);
+                  else if (dflags->blockSize){
+                    printf("%-ld\t%s\n",(long int) ceil(RecSubdirSize / ((double) dflags->blockSizeValue / 1024.0)), new_path);
+                  }
+                  else{
+                    printf("%-ld\t%s\n", RecSubdirSize, new_path);
+                  }
                   fflush(stdout);
                 }
               }
         }
     }
     if(depth==0){ //printing requested directory
-        if(dflags->bytes) size+=stat_entry.st_size;
-        else size+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
-        printf("%-ld\t%s\n", size, directory_path);
+        if(dflags->bytes){
+          size+=stat_entry.st_size;
+          printf("%-ld\t%s\n", size, directory_path);
+        }
+        else if (dflags->blockSize){
+          size+=stat_entry.st_blocks/2;
+          printf("%-ld\t%s\n",(long int) ceil(size / ((double) dflags->blockSizeValue / 1024.0)), directory_path);
+        }
+        else{
+          size+=stat_entry.st_blocks/2;
+          printf("%-ld\t%s\n", size, directory_path);
+        }
     }
 
     chdir("..");//go back to previous directory to continue listing things in there
