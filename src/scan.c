@@ -134,9 +134,9 @@ void SIGINT_handler(int signo) {
       return;
     }
     else if (quit == 'Y' || quit == 'y') {
-      regSendSignal(-pgchldid, SIGQUIT);
-      regSendSignal(getppid(), SIGQUIT);
-      regSendSignal(getpid(), SIGQUIT);
+      regSendSignal(-pgchldid, SIGTERM);
+      regSendSignal(getppid(), SIGTERM);
+      regSendSignal(getpid(), SIGTERM);
       return;
     }
     else continue;
@@ -146,7 +146,7 @@ void SIGINT_handler(int signo) {
 void SIGINT_subscriber() {
   struct sigaction action;
   action.sa_handler = SIGINT_handler;
-  action.sa_flags = 0;
+  action.sa_flags = SA_RESTART;
   sigemptyset(&action.sa_mask);
   sigaction(SIGINT, &action, &oldaction);
 }
