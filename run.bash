@@ -6,7 +6,7 @@ echo "----------------------------"
 # $? = 2 otherwise
 make 
 if [ $? -eq 0 ] ; then
-  ./simpledu -l ../TestDir -B 1024 -a -L $@
+  ./simpledu -l ~/.vscode -B 1024 -a -L $@
   make clean
 else
   echo "COMPILATION ERROR";
