@@ -28,6 +28,7 @@ Uso: ./simpledu dir flag1 flag2
 
 ### Erros
  - CTRL+C explicado em baixo
+ - Cálculo de Blocos ligeiramente diferente de du quando a flag -B está ativa
 
 ### Details
  - Durante os testes, usando "~/" como dir, ao premir CTRL+C o programa demora um bocado a pausar todos os processos filhos (depende do computador) e com isso apresenta a mensagem indicativa de pausa e as opções disponiveis no meio da listagem do programa. Fazendo com que quando a listagem é pausada, o programa espera o input de "Y" ou "N" sem teto indicativo.
