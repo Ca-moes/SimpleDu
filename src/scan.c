@@ -47,7 +47,7 @@ int listThings(char* directory_path, int depth, flags *dflags)
               regEntry(stat_entry.st_size, new_path);
             }
             else {
-              size += stat_entry.st_blocks*512.0 / dflags->blockSizeValue;
+              size += (stat_entry.st_blocks*512.0 / dflags->blockSizeValue);
               regEntry(stat_entry.st_blocks*512.0 / dflags->blockSizeValue, new_path);
             }
 
@@ -99,7 +99,7 @@ int listThings(char* directory_path, int depth, flags *dflags)
                 close(pd[READ]);
                 
                 if(dflags->bytes) RecSubdirSize+=stat_entry.st_size; //aparentemente isto varia n é smp o mesmo valor
-                else RecSubdirSize+=stat_entry.st_blocks*512.0 / dflags->blockSizeValue; //one block corresponds to 512 bytes
+                else RecSubdirSize+=(stat_entry.st_blocks*512.0 / dflags->blockSizeValue); //one block corresponds to 512 bytes
                 if (!dflags->separateDirs) size+=RecSubdirSize; //including subdirectory size
                 
                 regEntry(RecSubdirSize, new_path);

@@ -5,7 +5,7 @@ XHDRS = simpledu.h regfile.h flags.h scan.h
 EXEC = simpledu
 
 $(EXEC): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $@
+	@$(CC) $(CFLAGS) $(OBJS) -o $@ -lm
 
 %.o: %.c %.h $(XHDRS)
 	@$(CC) $(CFLAGS) -c $<

@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include "flags.h"
 #include "regfile.h"
+#include <math.h>
 
 #define WRITE 1
 #define READ  0
